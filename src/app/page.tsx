@@ -1,9 +1,9 @@
-import Image from "next/image";
-import VideoHero    from "@/components/VideoHero";
-import HeroDiagonal from "@/components/HeroDiagonal";
-import SectionSplit  from "@/components/SectionSplit";
-import AwardsPress   from "@/components/AwardsPress";
-import ScrollReveal  from "@/components/ScrollReveal";
+import VideoHero        from "@/components/VideoHero";
+import HeroDiagonal    from "@/components/HeroDiagonal";
+import SectionSplit    from "@/components/SectionSplit";
+import AwardsPress     from "@/components/AwardsPress";
+import ScrollReveal    from "@/components/ScrollReveal";
+import MobileImageStrip from "@/components/MobileImageStrip";
 import { cldImage, ASSETS } from "@/lib/cloudinary";
 
 export default function Home() {
@@ -42,21 +42,10 @@ export default function Home() {
       />
 
       {/* 4b. Mobile-only image break — between Events and The Wok */}
-      <div className="md:hidden relative w-full h-[280px] overflow-hidden">
-        <Image
-          src={cldImage(ASSETS.fromTheWokBg, "w_800,h_560,c_fill,f_auto,q_auto")}
-          alt="From The Wok — Gra Pow kitchen"
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-          loading="lazy"
-        />
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.55) 100%)" }}
-          aria-hidden="true"
-        />
-      </div>
+      <MobileImageStrip
+        src={cldImage(ASSETS.fromTheWokBg, "w_800,h_560,c_fill,f_auto,q_auto")}
+        alt="From The Wok — Gra Pow kitchen"
+      />
 
       {/* 5. The Wok blog — text left, image right */}
       <SectionSplit

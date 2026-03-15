@@ -88,8 +88,8 @@ export default function AwardsPress() {
           </p>
         </motion.div>
 
-        {/* Badge row */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-10 sm:gap-16">
+        {/* Badge row — always horizontal, 3 equal columns */}
+        <div className="grid grid-cols-3 items-start justify-items-center gap-4 sm:gap-12">
           {AWARDS.map((award, i) => (
             <motion.a
               key={award.year}
@@ -109,7 +109,7 @@ export default function AwardsPress() {
               aria-label={`Best of Inland Empire ${award.year} – Best Thai Food`}
             >
               {/* Badge image */}
-              <div className="relative w-36 h-36 sm:w-40 sm:h-40 drop-shadow-2xl">
+              <div className="relative w-24 h-24 sm:w-36 sm:h-36 md:w-40 md:h-40 drop-shadow-2xl">
                 <Image
                   src={cldImage(award.badgeSrc, "w_320,h_320,c_fit,f_auto,q_auto")}
                   alt={`Best of Inland Empire ${award.year} badge`}
