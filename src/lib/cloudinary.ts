@@ -18,6 +18,7 @@ export const ASSETS = {
   barBg:      "v1773467162/bar-interior_e3lutg.jpg",
   drinksBg:   "v1773465966/ChatGPT_Image_Mar_11_2026_08_50_58_AM_cw5p4p.png",
   // sections
+  fromTheWokBg: "v1773616152/photo-1717321302149-3c6c9c76de67_lxmmtp.jpg",
   eventsBg:   "v1773465971/ChatGPT_Image_Mar_11_2026_08_45_33_AM_ubgaro.png",
   sushiBg:    "v1773613175/cropped-IMG_5383-scaled-1_glbkjb.jpg",
   aboutBg:    "v1773243954/ChatGPT_Image_Mar_11_2026_08_45_33_AM_lauctt.png",
