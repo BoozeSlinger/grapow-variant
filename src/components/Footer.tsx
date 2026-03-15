@@ -42,11 +42,17 @@ export default function Footer() {
           <div>
             <p className="font-[family-name:var(--font-baskerville)] text-[#E8A000] tracking-widest text-xs uppercase mb-4">Hours</p>
             <div className="font-[family-name:var(--font-opensans)] text-gray-400 text-sm leading-loose">
-              <p>Mon – Thu: 11AM – 10PM</p>
-              <p>Fri – Sat: 11AM – 11PM</p>
-              <p>Sunday: 11AM – 9PM</p>
-              <p className="text-[#E8A000]/60 text-xs mt-2">Happy Hour: Daily 3–6PM &amp; 9PM–12AM</p>
-              <p className="text-[#E8A000]/60 text-xs">Sushi Bar: 5PM+ · Closed Sun &amp; Mon</p>
+              <p className="text-[#E8A000]/80 text-xs tracking-widest uppercase mb-1">Restaurant*</p>
+              <p>Sun – Thu: 11 AM – 9 PM</p>
+              <p>Fri – Sat: 11 AM – 10 PM</p>
+              <p className="text-[#E8A000]/80 text-xs tracking-widest uppercase mt-3 mb-1">Bar</p>
+              <p>Sun – Thu: Until Midnight</p>
+              <p>Fri – Sat: Until 2 AM</p>
+              <p className="text-gray-600 text-xs mt-3 leading-snug">
+                *Kitchen closes at 9:00 PM
+              </p>
+              <p className="text-[#E8A000]/50 text-xs mt-2">Happy Hour: Daily 3–6 PM &amp; 9 PM–Close</p>
+              <p className="text-[#E8A000]/50 text-xs">Sushi Bar: 5 PM+ · Closed Sun &amp; Mon</p>
             </div>
           </div>
 

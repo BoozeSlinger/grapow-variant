@@ -41,26 +41,6 @@ export default function Home() {
         imageAlt="Gra Pow sports bar — game day atmosphere"
       />
 
-      {/* 4b. Mobile-only image break — visual balance between Events and The Wok */}
-      <div className="md:hidden relative w-full h-[280px] overflow-hidden">
-        <Image
-          src={cldImage(ASSETS.sushiBg, "w_800,h_560,c_fill,f_auto,q_auto")}
-          alt="Gra Pow sushi bar — riverside dining"
-          fill
-          className="object-cover object-center"
-          sizes="100vw"
-          loading="lazy"
-        />
-        {/* Subtle gradient fade top + bottom so it blends into the dark sections */}
-        <div
-          className="absolute inset-0 pointer-events-none"
-          style={{
-            background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.55) 100%)"
-          }}
-          aria-hidden="true"
-        />
-      </div>
-
       {/* 5. The Wok blog — text left, image right */}
       <SectionSplit
         id="wook"
@@ -75,7 +55,7 @@ export default function Home() {
         dark
       />
 
-      {/* 6. Sushi bar — image left, text right */}
+      {/* 6. Sushi bar — text first on mobile, image right on desktop */}
       <SectionSplit
         id="sushi"
         eyebrow="Opens at 5PM · Closed Sun & Mon"
@@ -85,9 +65,29 @@ export default function Home() {
         ctaHref="/menu/sushi"
         imageSrc={cldImage(ASSETS.sushiBg)}
         imageAlt="Gra Pow sushi bar"
+        mobileTextFirst
       />
 
-      {/* 7. Awards & Press — Bento Grid */}
+      {/* 6b. Mobile-only: sushi image strip before Awards */}
+      <div className="md:hidden relative w-full h-[280px] overflow-hidden">
+        <Image
+          src={cldImage(ASSETS.sushiBg, "w_800,h_560,c_fill,f_auto,q_auto")}
+          alt="Gra Pow sushi bar — riverside dining"
+          fill
+          className="object-cover object-center"
+          sizes="100vw"
+          loading="lazy"
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.55) 100%)"
+          }}
+          aria-hidden="true"
+        />
+      </div>
+
+      {/* 7. Awards & Press */}
       <AwardsPress />
 
       {/* 8. About — text left, image right */}

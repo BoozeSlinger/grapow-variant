@@ -6,21 +6,23 @@ import { motion, useInView } from "framer-motion";
 import ScrollReveal from "@/components/ScrollReveal";
 
 interface Props {
-  id?:        string;
-  eyebrow:    string;
-  heading:    string;
-  body:       string;
-  ctaLabel:   string;
-  ctaHref:    string;
-  imageSrc:   string;
-  imageAlt:   string;
-  reverse?:   boolean;
-  dark?:      boolean;
+  id?:             string;
+  eyebrow:         string;
+  heading:         string;
+  body:            string;
+  ctaLabel:        string;
+  ctaHref:         string;
+  imageSrc:        string;
+  imageAlt:        string;
+  reverse?:        boolean;
+  dark?:           boolean;
+  /** On mobile, force text block above image regardless of reverse prop */
+  mobileTextFirst?: boolean;
 }
 
 export default function SectionSplit({
   id, eyebrow, heading, body, ctaLabel, ctaHref,
-  imageSrc, imageAlt, reverse = false, dark = false,
+  imageSrc, imageAlt, reverse = false, dark = false, mobileTextFirst = false,
 }: Props) {
   const bg = dark ? "bg-[#222222]" : "bg-[#1a1a1a]";
 
@@ -91,7 +93,7 @@ export default function SectionSplit({
     <section
       ref={sectionRef}
       id={id}
-      className="flex min-h-[520px] flex-col md:flex-row"
+      className={`flex min-h-[520px] md:flex-row ${mobileTextFirst && !reverse ? "flex-col-reverse" : "flex-col"}`}
     >
       {reverse ? <>{textBlock}{imageBlock}</> : <>{imageBlock}{textBlock}</>}
     </section>
