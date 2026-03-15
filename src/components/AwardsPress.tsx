@@ -1,63 +1,32 @@
 "use client";
+import Image from "next/image";
 import { motion } from "framer-motion";
-import Link from "next/link";
-
-/* ── Publication SVG logos ───────────────────────────────────────── */
-function PressEnterpriseLogo() {
-  return (
-    <svg viewBox="0 0 200 28" className="h-4 w-auto" fill="currentColor" aria-label="Riverside Press-Enterprise">
-      <rect x="0" y="8" width="6" height="12" rx="1" />
-      <rect x="10" y="4" width="6" height="20" rx="1" />
-      <rect x="20" y="0" width="6" height="28" rx="1" />
-      <text x="34" y="20" fontSize="12" fontFamily="serif" letterSpacing="1">PRESS-ENTERPRISE</text>
-    </svg>
-  );
-}
-
-function IEWeeklyLogo() {
-  return (
-    <svg viewBox="0 0 160 28" className="h-4 w-auto" fill="currentColor" aria-label="IE Weekly">
-      <rect x="0" y="2" width="18" height="4" rx="1" />
-      <rect x="0" y="10" width="12" height="4" rx="1" />
-      <rect x="0" y="18" width="18" height="4" rx="1" />
-      <text x="26" y="20" fontSize="12" fontFamily="serif" letterSpacing="2">IE WEEKLY</text>
-    </svg>
-  );
-}
-
-function OCRegisterLogo() {
-  return (
-    <svg viewBox="0 0 160 28" className="h-4 w-auto" fill="currentColor" aria-label="OC Register">
-      <circle cx="11" cy="14" r="10" strokeWidth="2.5" stroke="currentColor" fill="none" />
-      <circle cx="11" cy="14" r="4" />
-      <text x="28" y="19" fontSize="12" fontFamily="serif" letterSpacing="1">OC REGISTER</text>
-    </svg>
-  );
-}
-
-const noiseSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)' opacity='1'/></svg>`;
+import { cldImage, ASSETS } from "@/lib/cloudinary";
 
 const AWARDS = [
   {
-    title: "Best Thai Restaurant",
-    years: ["2022", "2023", "2024"],
+    title: "Best Thai Food",
+    year: "2023",
     outlet: "Riverside Press-Enterprise",
-    category: "Readers' Choice Award",
-    Logo: PressEnterpriseLogo,
+    category: "Best of Inland Empire",
+    href: "https://www.pressenterprise.com/2023/09/10/best-of-inland-empire-2023-best-thai-food/",
+    badgeSrc: ASSETS.bieLogo2023,
   },
   {
-    title: "Top Sports Bar IE",
-    years: ["2023", "2024"],
-    outlet: "IE Weekly",
-    category: "Best of the Inland Empire",
-    Logo: IEWeeklyLogo,
+    title: "Best Thai Food",
+    year: "2020",
+    outlet: "Riverside Press-Enterprise",
+    category: "Best of Inland Empire",
+    href: "https://www.pressenterprise.com/2020/09/20/best-of-inland-empire-2020-best-thai-food/",
+    badgeSrc: ASSETS.bieLogo2020,
   },
   {
-    title: "Must-Try Cocktails",
-    years: ["2024"],
-    outlet: "OC Register",
-    category: "Food & Drink Section",
-    Logo: OCRegisterLogo,
+    title: "Best Thai Food",
+    year: "2019",
+    outlet: "Riverside Press-Enterprise",
+    category: "Best of Inland Empire",
+    href: "https://www.pressenterprise.com/2019/09/12/best-of-inland-empire-2019-best-thai-food/",
+    badgeSrc: ASSETS.bieLogo2019,
   },
 ];
 
@@ -67,28 +36,35 @@ const cardVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.65, delay: i * 0.14, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] },
+    transition: {
+      duration: 0.65,
+      delay: i * 0.14,
+      ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+    },
   }),
 };
 
+const noiseSvg = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)' opacity='1'/></svg>`;
+
 function AwardCard({ award, index }: { award: typeof AWARDS[number]; index: number }) {
-  const { title, years, outlet, category, Logo } = award;
+  const { title, year, outlet, category, href, badgeSrc } = award;
 
   return (
-    <motion.div
+    <motion.a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
       custom={index}
       variants={cardVariants}
       initial="hidden"
       whileInView="visible"
       viewport={{ once: true, margin: "-60px" }}
       whileHover={{ scale: 1.03, transition: { duration: 0.25 } }}
-      className="relative rounded-2xl overflow-hidden flex flex-col justify-between p-7 min-h-[240px]"
+      className="relative rounded-2xl overflow-hidden flex flex-col justify-between p-7 min-h-[260px] cursor-pointer group"
       style={{
-        /* Deep glass base */
         background: "linear-gradient(135deg, rgba(232,160,0,0.07) 0%, rgba(255,255,255,0.03) 50%, rgba(0,0,0,0.15) 100%)",
         backdropFilter: "blur(24px)",
         WebkitBackdropFilter: "blur(24px)",
-        /* Gold outer glow */
         boxShadow: [
           "0 0 0 1px rgba(232,160,0,0.22)",
           "0 0 28px rgba(232,160,0,0.12)",
@@ -98,7 +74,7 @@ function AwardCard({ award, index }: { award: typeof AWARDS[number]; index: numb
         ].join(", "),
       }}
     >
-      {/* Inner top-left rim shimmer */}
+      {/* Inner rim shimmer */}
       <div
         className="absolute inset-0 rounded-2xl pointer-events-none"
         style={{
@@ -117,38 +93,48 @@ function AwardCard({ award, index }: { award: typeof AWARDS[number]; index: numb
             fontFamily: "Georgia, serif",
           }}
         >
-          {years[years.length - 1]}
+          {year}
         </span>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 flex flex-col gap-3">
-        <div className="text-[#E8A000]/60">
-          <Logo />
+      {/* Badge image */}
+      <div className="relative z-10 flex items-start">
+        <div className="relative w-24 h-24 flex-shrink-0">
+          <Image
+            src={cldImage(badgeSrc, "w_192,h_192,c_fit,f_auto,q_auto")}
+            alt={`Best of Inland Empire ${year} badge`}
+            fill
+            className="object-contain drop-shadow-lg"
+            sizes="96px"
+          />
         </div>
+      </div>
+
+      {/* Card content */}
+      <div className="relative z-10 flex flex-col gap-2 mt-3">
+        <p className="text-[#E8A000]/60 text-[10px] tracking-[0.2em] uppercase">{category}</p>
         <h3
-          className="text-white text-xl font-semibold leading-snug tracking-tight mt-1"
+          className="text-white text-xl font-semibold leading-snug tracking-tight"
           style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
         >
           {title}
         </h3>
-        <p className="text-[#E8A000]/50 text-[10px] tracking-[0.2em] uppercase">{category}</p>
-      </div>
 
-      {/* Year pills row */}
-      <div className="relative z-10 flex flex-wrap items-center gap-2 mt-5">
-        {years.map((y) => (
+        <div className="flex items-center justify-between mt-3">
           <span
-            key={y}
-            className="text-[#E8A000] text-[10px] tracking-widest border border-[#E8A000]/30 px-2.5 py-0.5 rounded-full"
+            className="text-[#E8A000] text-[11px] tracking-widest border border-[#E8A000]/30 px-3 py-1 rounded-full"
             style={{ background: "rgba(232,160,0,0.06)" }}
           >
-            {y}
+            {year}
           </span>
-        ))}
-        <span className="text-gray-600 text-[10px] tracking-wide ml-1">{outlet}</span>
+          {/* "Read article" hint on hover */}
+          <span className="text-[#E8A000]/0 group-hover:text-[#E8A000]/60 transition-colors duration-300 text-[10px] tracking-widest uppercase">
+            Read →
+          </span>
+        </div>
+        <p className="text-gray-600 text-[10px] tracking-wide mt-1">{outlet}</p>
       </div>
-    </motion.div>
+    </motion.a>
   );
 }
 
@@ -162,7 +148,7 @@ export default function AwardsPress() {
         aria-hidden="true"
       />
 
-      {/* Centered gold radial glow behind cards */}
+      {/* Gold radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
@@ -194,7 +180,7 @@ export default function AwardsPress() {
         {/* Equal 3-column grid */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
           {AWARDS.map((award, i) => (
-            <AwardCard key={award.title} award={award} index={i} />
+            <AwardCard key={`${award.title}-${award.year}`} award={award} index={i} />
           ))}
         </div>
 
@@ -206,7 +192,14 @@ export default function AwardsPress() {
           transition={{ duration: 0.5, delay: 0.55 }}
           className="text-center mt-14"
         >
-          <Link href="#press-full" className="btn-outline inline-block">See All Press</Link>
+          <a
+            href="https://www.pressenterprise.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-outline inline-block"
+          >
+            See All Press
+          </a>
         </motion.div>
       </div>
     </section>

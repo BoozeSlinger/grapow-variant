@@ -1,3 +1,4 @@
+import Image from "next/image";
 import VideoHero    from "@/components/VideoHero";
 import HeroDiagonal from "@/components/HeroDiagonal";
 import SectionSplit  from "@/components/SectionSplit";
@@ -39,6 +40,26 @@ export default function Home() {
         imageSrc={cldImage(ASSETS.eventsBg)}
         imageAlt="Gra Pow sports bar — game day atmosphere"
       />
+
+      {/* 4b. Mobile-only image break — visual balance between Events and The Wok */}
+      <div className="md:hidden relative w-full h-[280px] overflow-hidden">
+        <Image
+          src={cldImage(ASSETS.sushiBg, "w_800,h_560,c_fill,f_auto,q_auto")}
+          alt="Gra Pow sushi bar — riverside dining"
+          fill
+          className="object-cover object-center"
+          sizes="100vw"
+          loading="lazy"
+        />
+        {/* Subtle gradient fade top + bottom so it blends into the dark sections */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.45) 0%, transparent 30%, transparent 70%, rgba(0,0,0,0.55) 100%)"
+          }}
+          aria-hidden="true"
+        />
+      </div>
 
       {/* 5. The Wok blog — text left, image right */}
       <SectionSplit

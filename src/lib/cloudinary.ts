@@ -19,7 +19,11 @@ export const ASSETS = {
   drinksBg:   "v1773465966/ChatGPT_Image_Mar_11_2026_08_50_58_AM_cw5p4p.png",
   // sections
   eventsBg:   "v1773465971/ChatGPT_Image_Mar_11_2026_08_45_33_AM_ubgaro.png",
-  sushiBg:    "v1773465967/grapow-thai-riverside_sudx3u.png",
+  sushiBg:    "v1773613175/cropped-IMG_5383-scaled-1_glbkjb.jpg",
   aboutBg:    "v1773243954/ChatGPT_Image_Mar_11_2026_08_45_33_AM_lauctt.png",
   wookBg:     "v1773465967/ChatGPT_Image_Mar_11_2026_08_38_55_AM_wc25u1.png",
+  // awards — Best of Inland Empire badge images
+  bieLogo2019: "v1773614798/BIE_smLogo_2019-1-38_ucd4th.png",
+  bieLogo2020: "v1773615014/BIE-LOGO-0920-v3-95_bwklhs.png",
+  bieLogo2023: "v1773613942/background_removed_image_9LCbtRQaR4q_tEISapRSyw_cviunc.png",
 };
