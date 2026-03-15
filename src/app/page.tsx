@@ -1,65 +1,86 @@
-import Image from "next/image";
+import VideoHero    from "@/components/VideoHero";
+import HeroDiagonal from "@/components/HeroDiagonal";
+import SectionSplit  from "@/components/SectionSplit";
+import AwardsPress   from "@/components/AwardsPress";
+import ScrollReveal  from "@/components/ScrollReveal";
+import { cldImage, ASSETS } from "@/lib/cloudinary";
 
 export default function Home() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main>
+      {/* 1. Full-screen video hero */}
+      <VideoHero />
+
+      {/* 2. 3-column diagonal menu selector */}
+      <HeroDiagonal />
+
+      {/* 3. Tagline */}
+      <section className="bg-[#111111] py-10 md:py-14 text-center px-6">
+        <ScrollReveal>
+          <h2 className="font-[family-name:var(--font-dancing)] text-[3.45rem] md:text-[5.2rem] text-[#E8A000] leading-tight">
+            Gra Pow Riverside
+          </h2>
+        </ScrollReveal>
+        <ScrollReveal delay={0.15}>
+          <p className="font-[family-name:var(--font-baskerville)] text-gray-400 mt-4 tracking-widest text-[0.86rem] md:text-base uppercase">
+            Thai Kitchen &amp; Sports Bar — Riverside, CA
           </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        </ScrollReveal>
+      </section>
+
+      {/* 4. Events — image left, text right */}
+      <SectionSplit
+        id="events"
+        eyebrow="What's Poppin'"
+        heading={"Events &\nGame Days"}
+        body="From watch parties on the big screens to live DJ nights and themed happy hours, Gra Pow keeps it loud, lively, and full of flavor. Check what's on and never miss a moment."
+        ctaLabel="See Events"
+        ctaHref="#events-list"
+        imageSrc={cldImage(ASSETS.eventsBg)}
+        imageAlt="Gra Pow sports bar — game day atmosphere"
+      />
+
+      {/* 5. The Wok blog — text left, image right */}
+      <SectionSplit
+        id="wook"
+        eyebrow="Stories & Recipes"
+        heading="The Wok"
+        body="Dive behind the wok. From the origin of Thai basil stir fry to the recipe behind the Gra Pow Mule — our blog brings you the flavors, the stories, and the Riverside dining scene."
+        ctaLabel="Read The Wok"
+        ctaHref="#wok-posts"
+        imageSrc={cldImage(ASSETS.wookBg)}
+        imageAlt="Thai food close-up"
+        reverse
+        dark
+      />
+
+      {/* 6. Sushi bar — image left, text right */}
+      <SectionSplit
+        id="sushi"
+        eyebrow="Opens at 5PM · Closed Sun & Mon"
+        heading="Sushi Bar"
+        body="When evening sets in, so does the Sushi Bar. Fresh sashimi, house specialty rolls, and creative small bites — crafted nightly from 5PM. Try the Hangover Roll or the Yellowtail Crudo while they last."
+        ctaLabel="Sushi Menu"
+        ctaHref="/menu/sushi"
+        imageSrc={cldImage(ASSETS.sushiBg)}
+        imageAlt="Gra Pow sushi bar"
+      />
+
+      {/* 7. Awards & Press — Bento Grid */}
+      <AwardsPress />
+
+      {/* 8. About — text left, image right */}
+      <SectionSplit
+        id="about"
+        eyebrow="Our Story"
+        heading={"Gra Pow\nRiverside"}
+        body="Born from a love of authentic Thai flavors and community, Gra Pow has been Riverside's gathering place for years. Named after the Thai basil stir fry that started it all, we blend bold Southeast Asian cuisine with a laid-back sports bar vibe — and we wouldn't have it any other way."
+        ctaLabel="Find Us"
+        ctaHref="#site-footer"
+        imageSrc={cldImage(ASSETS.aboutBg)}
+        imageAlt="Gra Pow interior — sports bar dining room"
+        reverse
+      />
+    </main>
   );
 }
