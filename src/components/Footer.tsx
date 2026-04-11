@@ -61,6 +61,7 @@ const NAV = [
   { label: "Happy Hour", href: "/menu/happy-hour" },
   { label: "Drinks",     href: "/menu/drinks" },
   { label: "Sushi Bar",  href: "/menu/sushi" },
+  { label: "Reservations", href: "/reservations" },
   { label: "Events",     href: "/#events" },
   { label: "The Wok",    href: "/#wook" },
   { label: "Press",      href: "/#media" },
@@ -159,7 +160,7 @@ function MapCell() {
 
   return (
     <div
-      className="relative w-full overflow-hidden rounded-2xl cursor-pointer"
+      className="relative w-full overflow-hidden rounded-2xl cursor-pointer lift-on-hover"
       style={{
         minHeight: "260px",
         background: "#0d1117",
@@ -295,21 +296,20 @@ export default function Footer() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="flex flex-col gap-6"
           >
-            <Link href="/" aria-label="Gra Pow home" className="inline-block self-start">
+            <Link href="/" aria-label="Gra Pow home" className="inline-block self-start group">
               <Image
-                src={cldImage(ASSETS.logo, "h_100,f_auto,q_auto")}
+                src="/grapow-new-logo.png"
                 alt="Gra Pow Riverside logo"
-                width={90}
-                height={80}
-                className="h-16 w-auto object-contain"
-                style={{ filter: "brightness(0) invert(1)", opacity: 0.88 }}
+                width={120}
+                height={100}
+                className="h-16 w-auto object-contain transition-all duration-500 group-hover:drop-shadow-[0_0_15px_rgba(232,160,0,0.5)] group-hover:scale-110"
               />
             </Link>
 
-            <p className="text-sm leading-relaxed max-w-[210px]"
+            <p className="text-sm leading-relaxed max-w-[210px] animate-pulse-slow"
                style={{ color: "rgba(156,163,175,1)", ...SERIF, fontStyle: "italic" }}>
               Thai heritage meets high-octane sports — Riverside&apos;s boldest table.
             </p>
@@ -318,12 +318,13 @@ export default function Footer() {
             <div className="flex items-center gap-2.5" role="list" aria-label="Social media links">
 
               {/* Instagram */}
-              <a
+              <motion.a
                 href="https://www.instagram.com/grapow_ig/"
                 target="_blank" rel="noopener noreferrer"
                 aria-label="Follow Gra Pow on Instagram"
                 role="listitem"
-                className="group flex items-center justify-center rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8A000] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
+                whileHover={{ scale: 1.15, rotate: -5 }}
+                className="group flex items-center justify-center rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8A000] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] shine-effect"
                 style={{
                   width: 48, height: 48, flexShrink: 0, color: "rgba(156,163,175,1)",
                   background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.10)",
@@ -335,15 +336,16 @@ export default function Footer() {
                 <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
                 </svg>
-              </a>
+              </motion.a>
 
               {/* Facebook */}
-              <a
+              <motion.a
                 href="https://www.facebook.com/p/Gra-Pow-100063506142426/"
                 target="_blank" rel="noopener noreferrer"
                 aria-label="Follow Gra Pow on Facebook"
                 role="listitem"
-                className="flex items-center justify-center rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8A000] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a]"
+                whileHover={{ scale: 1.15, rotate: 5 }}
+                className="flex items-center justify-center rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8A000] focus-visible:ring-offset-2 focus-visible:ring-offset-[#0a0a0a] shine-effect"
                 style={{
                   width: 48, height: 48, flexShrink: 0, color: "rgba(156,163,175,1)",
                   background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.10)",
@@ -355,7 +357,7 @@ export default function Footer() {
                 <svg width="17" height="17" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
-              </a>
+              </motion.a>
             </div>
           </motion.div>
 
@@ -582,12 +584,13 @@ export default function Footer() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-[10px] tracking-[0.2em] uppercase transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8A000] rounded"
+                className="relative group text-[10px] tracking-[0.2em] uppercase transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E8A000] rounded"
                 style={{ color: "rgba(75,85,99,1)", ...SERIF }}
                 onMouseEnter={(e) => (e.currentTarget.style.color = "#E8A000")}
                 onMouseLeave={(e) => (e.currentTarget.style.color = "rgba(75,85,99,1)")}
               >
                 {item.label}
+                <span className="absolute -bottom-1 left-1/2 w-0 h-[1px] bg-[#E8A000] transition-all duration-300 group-hover:w-full group-hover:left-0" />
               </Link>
             ))}
           </nav>

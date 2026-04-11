@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 import { cldImage, ASSETS } from "@/lib/cloudinary";
 
 const NAV = [
@@ -9,6 +10,7 @@ const NAV = [
   { label: "Happy Hour", href: "/menu/happy-hour" },
   { label: "Drinks",     href: "/menu/drinks" },
   { label: "Sushi Bar",  href: "/menu/sushi" },
+  { label: "Reservations", href: "/reservations" },
   { label: "Events",     href: "/#events" },
   { label: "The Wok",    href: "/#wook" },
   { label: "Press",      href: "/#media" },
@@ -35,46 +37,69 @@ export default function Header() {
   return (
     <>
       {/* ── Mobile nav overlay ───────────────────────────── */}
-      <nav
-        className={`fixed inset-0 z-[200] bg-[#111111] flex-col items-center justify-center gap-8 ${open ? "flex" : "hidden"}`}
-        role="navigation"
-        aria-label="Mobile navigation"
-      >
-        <button
-          onClick={() => setOpen(false)}
-          className="absolute top-6 left-6 text-white p-2"
-          aria-label="Close navigation"
-        >
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <line x1="18" y1="6" x2="6" y2="18" />
-            <line x1="6" y1="6" x2="18" y2="18" />
-          </svg>
-        </button>
-
-        {NAV.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={() => setOpen(false)}
-            className="font-[family-name:var(--font-dancing)] text-5xl text-white hover:text-[#E8A000] transition-colors"
+      <AnimatePresence>
+        {open && (
+          <motion.nav
+            initial={{ opacity: 0, x: -25 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -25 }}
+            transition={{ duration: 0.4, ease: "circOut" }}
+            className="fixed inset-0 z-[200] bg-[#0a0a0a]/98 backdrop-blur-xl flex flex-col items-center justify-center gap-6"
+            role="navigation"
+            aria-label="Mobile navigation"
           >
-            {item.label}
-          </Link>
-        ))}
-        <Link href="#site-footer" onClick={() => setOpen(false)} className="btn-outline mt-2">
-          Reserve a Table
-        </Link>
-      </nav>
+            <button
+              onClick={() => setOpen(false)}
+              className="absolute top-8 left-8 text-white p-2 hover:text-[#E8A000] transition-colors"
+              aria-label="Close navigation"
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+
+            {NAV.map((item, i) => (
+              <motion.div
+                key={item.href}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + i * 0.05 }}
+              >
+                <Link
+                  href={item.href}
+                  onClick={() => setOpen(false)}
+                  className="font-[family-name:var(--font-baskerville)] text-4xl text-white/90 hover:text-[#E8A000] transition-colors italic"
+                >
+                  {item.label}
+                </Link>
+              </motion.div>
+            ))}
+            
+            <motion.div
+               initial={{ opacity: 0, scale: 0.9 }}
+               animate={{ opacity: 1, scale: 1 }}
+               transition={{ delay: 0.5 }}
+               className="mt-6"
+            >
+              <Link href="/reservations" onClick={() => setOpen(false)} className="btn-gold px-12 py-4">
+                Reserve
+              </Link>
+            </motion.div>
+          </motion.nav>
+        )}
+      </AnimatePresence>
 
       {/* ── Header bar ──────────────────────────────────── */}
       <header
         id="site-header"
-        className="fixed top-0 left-0 right-0 z-[100] transition-all duration-500"
+        className="fixed top-0 left-0 right-0 z-[100] transition-all duration-700"
         style={{
-          background:     pastHero ? "rgba(0,0,0,0.18)" : "transparent",
-          backdropFilter: pastHero ? "blur(12px)" : "none",
-          WebkitBackdropFilter: pastHero ? "blur(12px)" : "none",
-          borderBottom:   "none",
+          background:     pastHero ? "rgba(10,10,10,0.85)" : "transparent",
+          backdropFilter: pastHero ? "blur(16px)" : "none",
+          WebkitBackdropFilter: pastHero ? "blur(16px)" : "none",
+          borderBottom:   pastHero ? "1px solid rgba(255,255,255,0.06)" : "none",
+          boxShadow:      pastHero ? "0 8px 32px rgba(0,0,0,0.4)" : "none",
         }}
         role="banner"
       >
@@ -104,11 +129,11 @@ export default function Header() {
             }}
           >
             <Image
-              src={cldImage(ASSETS.logo, "h_80,f_auto,q_auto")}
-              alt="Gra Pow"
-              width={80}
-              height={64}
-              className="h-12 w-auto object-contain drop-shadow-lg"
+              src="/grapow-new-logo.png"
+              alt="Gra Pow Riverside logo"
+              width={120}
+              height={100}
+              className="h-10 md:h-12 w-auto object-contain"
             />
           </Link>
 
@@ -126,7 +151,7 @@ export default function Header() {
                 <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
               </svg>
             </a>
-            <Link href="#site-footer" className="btn-gold hidden sm:inline-block">Reserve</Link>
+            <Link href="/reservations" className="btn-gold hidden sm:inline-block">Reserve</Link>
           </div>
         </div>
       </header>
