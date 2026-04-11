@@ -2,40 +2,40 @@
 
 Add a premium, high-aesthetic reservation system to Gra Pow Riverside.
 
-## Task 1: Supabase Setup
+## Task 1: Supabase Setup (COMPLETED)
 **Files:** `supabase/migrations/20260411_reservations.sql`
 
-[ ] **Step 1: Create the reservations table.** Use the schema from the reference repo, but tailor it for a single-location restaurant.
-[ ] **Step 2: Add RLS policies.** Allow public (anon) inserts for guest reservations and authenticated/staff reads.
+[x] **Step 1: Create the reservations table.** Use the schema from the reference repo, but tailor it for a single-location restaurant.
+[x] **Step 2: Add RLS policies.** Allow public (anon) inserts for guest reservations and authenticated/staff reads.
 
-## Task 2: Core Infrastructure
+## Task 2: Core Infrastructure (COMPLETED)
 **Files:** `src/lib/supabase.ts`, `src/types/supabase.ts`, `src/store/useReservationStore.ts`
 
-[ ] **Step 1: Install dependencies.** `npm install @supabase/supabase-js zustand`.
-[ ] **Step 2: Configure Supabase client.** 
-[ ] **Step 3: Define types.** 
-[ ] **Step 4: Create the Zustand store.** Manage party size, date, time selection status.
+[x] **Step 1: Install dependencies.** `npm install @supabase/supabase-js zustand`.
+[x] **Step 2: Configure Supabase client.** 
+[x] **Step 3: Define types.** 
+[x] **Step 4: Create the Zustand store.** Manage party size, date, time selection status.
 
-## Task 3: Premium UI Components
+## Task 3: Premium UI Components (COMPLETED)
 **Files:** `src/components/reservations/GlassCard.tsx`, `src/components/reservations/PartySelector.tsx`, `src/components/reservations/DateTimePicker.tsx`
 
-[ ] **Step 1: Build the GlassCard component.** Uses `liquid glass` (blur, subtle border, shine).
-[ ] **Step 2: Build the PartySelector.** Staggered entrance for guest count buttons.
-[ ] **Step 3: Build the DateTimePicker.** Custom elegant grid for time slots.
+[x] **Step 1: Build the GlassCard component.** Uses `liquid glass` (blur, subtle border, shine).
+[x] **Step 2: Build the PartySelector.** Staggered entrance for guest count buttons.
+[x] **Step 3: Build the DateTimePicker.** Custom elegant grid for time slots.
 
-## Task 4: Reservation Page
+## Task 4: Reservation Page (COMPLETED)
 **Files:** `src/app/reservations/page.tsx`
 
-[ ] **Step 1: Implement the multi-step reservation flow.**
+[x] **Step 1: Implement the multi-step reservation flow.**
     - Step 1: Party Size + Date/Time.
     - Step 2: Contact Info.
     - Step 3: Success Confirmation with "analog noise" background.
 
-## Task 5: Site Integration
+## Task 5: Site Integration (COMPLETED)
 **Files:** `src/components/Header.tsx`, `src/components/Footer.tsx`
 
-[ ] **Step 1: Add "Book a Table" to navigation.**
-[ ] **Step 2: Add Reservation link to footer.**
+[x] **Step 1: Add "Book a Table" to navigation.**
+[x] **Step 2: Add Reservation link to footer.**
 
 ---
 

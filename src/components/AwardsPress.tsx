@@ -74,18 +74,36 @@ export default function AwardsPress() {
           initial={{ opacity: 0, y: 22 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="text-center mb-16"
         >
-          <p className="text-[#E8A000]/70 tracking-[0.3em] text-xs uppercase mb-4" style={{ fontFamily: "Georgia, serif" }}>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-[#E8A000]/70 tracking-[0.3em] text-xs uppercase mb-4" 
+            style={{ fontFamily: "Georgia, serif" }}
+          >
             Recognized Excellence
-          </p>
-          <h2 className="text-white text-5xl md:text-6xl font-semibold leading-tight" style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}>
+          </motion.p>
+          <motion.h2 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3, duration: 0.8 }}
+            className="text-white text-5xl md:text-6xl font-semibold leading-tight" 
+            style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+          >
             Awards &amp; Press
-          </h2>
-          <p className="text-gray-500 mt-4 text-sm max-w-sm mx-auto leading-relaxed" style={{ fontFamily: "Georgia, serif" }}>
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="text-gray-500 mt-4 text-sm max-w-sm mx-auto leading-relaxed" 
+            style={{ fontFamily: "Georgia, serif" }}
+          >
             Best Thai Food — Best of Inland Empire
-          </p>
+          </motion.p>
         </motion.div>
 
         {/* Badge row — always horizontal, 3 equal columns */}
@@ -96,15 +114,15 @@ export default function AwardsPress() {
               href={award.href}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{
-                duration: 0.6,
+                duration: 0.8,
                 delay: i * 0.15,
-                ease: [0.22, 1, 0.36, 1] as [number, number, number, number],
+                ease: [0.34, 1.56, 0.64, 1],
               }}
-              whileHover={{ scale: 1.08, transition: { duration: 0.25 } }}
+              whileHover={{ scale: 1.1, transition: { duration: 0.25 } }}
               className="flex flex-col items-center gap-4 group cursor-pointer"
               aria-label={`Best of Inland Empire ${award.year} – Best Thai Food`}
             >
@@ -120,16 +138,18 @@ export default function AwardsPress() {
               </div>
 
               {/* Year + link cue */}
-              <div className="text-center">
+              <div className="text-center relative">
                 <p
                   className="text-[#E8A000] text-sm tracking-[0.2em] uppercase"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   {award.year}
                 </p>
-                <p className="text-gray-600 text-[10px] tracking-widest uppercase mt-1 group-hover:text-[#E8A000]/50 transition-colors duration-300">
+                <p className="text-gray-600 text-[10px] tracking-widest uppercase mt-1 group-hover:text-[#E8A000]/80 transition-colors duration-300">
                   Read Article →
                 </p>
+                {/* Center growing underline */}
+                <span className="absolute -bottom-1 left-1/2 w-0 h-[1px] bg-[#E8A000] transition-all duration-300 group-hover:w-full group-hover:left-0" />
               </div>
             </motion.a>
           ))}
@@ -140,7 +160,7 @@ export default function AwardsPress() {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
           className="mt-20"
         >
           <p className="text-center text-[#E8A000]/60 tracking-[0.25em] text-xs uppercase mb-10" style={{ fontFamily: "Georgia, serif" }}>

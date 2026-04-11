@@ -2,10 +2,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { cldImage, cldVideo, ASSETS } from "@/lib/cloudinary";
 
 export default function VideoHero() {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const { scrollY } = useScroll();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -59,24 +61,29 @@ export default function VideoHero() {
       aria-label="Welcome to Gra Pow"
     >
       {/* ── Video ─────────────────────────────────────────────────── */}
-      <video
-        ref={videoRef}
-        className="absolute inset-0 w-full h-full object-cover object-center"
-        autoPlay
-        muted          // required for autoplay on iOS
-        loop
-        playsInline    // required for inline playback on iOS (no fullscreen hijack)
-        preload="metadata"  // load enough to show first frame; avoids draining
-                            // mobile data/battery with "auto" on slow connections
-        poster={posterSrc}
-        disablePictureInPicture
-        aria-hidden="true"
+      <motion.div 
+        className="absolute inset-0 w-full h-full"
+        style={{ y: useTransform(scrollY, [0, 500], [0, 150]) }}
       >
-        {/* WebM first — Chrome/Firefox/Android choose this */}
-        <source src={webmSrc} type="video/webm" />
-        {/* MP4 fallback — Safari/iOS */}
-        <source src={mp4Src} type="video/mp4" />
-      </video>
+        <video
+          ref={videoRef}
+          className="absolute inset-0 w-full h-full object-cover object-center"
+          autoPlay
+          muted          // required for autoplay on iOS
+          loop
+          playsInline    // required for inline playback on iOS (no fullscreen hijack)
+          preload="metadata"  // load enough to show first frame; avoids draining
+                              // mobile data/battery with "auto" on slow connections
+          poster={posterSrc}
+          disablePictureInPicture
+          aria-hidden="true"
+        >
+          {/* WebM first — Chrome/Firefox/Android choose this */}
+          <source src={webmSrc} type="video/webm" />
+          {/* MP4 fallback — Safari/iOS */}
+          <source src={mp4Src} type="video/mp4" />
+        </video>
+      </motion.div>
 
       {/* ── Gradient overlay ──────────────────────────────────────── */}
       <div
@@ -91,28 +98,57 @@ export default function VideoHero() {
       <div className="grain-overlay" aria-hidden="true" />
 
       {/* ── Content ───────────────────────────────────────────────── */}
-      <div className="relative z-10 flex flex-col items-center justify-center gap-6 text-center px-6">
-        <Image
-          src={cldImage(ASSETS.logo, "h_300,f_auto,q_auto")}
-          alt="Gra Pow Thai & Sports Bar"
-          width={300}
-          height={300}
-          className="w-[230px] md:w-[346px] lg:w-[461px] h-auto object-contain drop-shadow-2xl"
-          priority
-        />
-        <p className="font-[family-name:var(--font-baskerville)] text-white/80 tracking-[0.25em] text-xs md:text-sm uppercase">
+      <div className="relative z-10 flex flex-col items-center justify-center gap-6 text-center px-6 mt-12 md:mt-20">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: "easeOut" }}
+          className="animate-float"
+        >
+          <Image
+            src="/grapow-new-logo.png"
+            alt="Gra Pow Thai & Sports Bar"
+            width={500}
+            height={500}
+            className="w-[230px] md:w-[346px] lg:w-[461px] h-auto object-contain drop-shadow-2xl"
+            priority
+          />
+        </motion.div>
+
+        <motion.p 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.8 }}
+          className="font-[family-name:var(--font-baskerville)] text-white/80 tracking-[0.25em] text-xs md:text-sm uppercase"
+        >
           Thai Kitchen &amp; Sports Bar &nbsp;·&nbsp; Riverside, CA
-        </p>
-        <Link href="#hero-diagonal" className="btn-outline mt-2">
-          Explore the Menu
-        </Link>
+        </motion.p>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
+          className="flex flex-col sm:flex-row items-center gap-4 mt-2"
+        >
+          <Link href="#hero-diagonal" className="btn-outline">
+            Explore the Menu
+          </Link>
+          <Link href="#site-footer" className="btn-gold px-8 py-3.5 border-2 border-transparent hover:border-white/20">
+            Reserve Now
+          </Link>
+        </motion.div>
 
         {/* Scroll cue */}
-        <div className="scroll-cue mt-6 opacity-60" aria-hidden="true">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8A000" strokeWidth="2">
-            <path d="M12 5v14M5 12l7 7 7-7" />
+        <Link 
+          href="#hero-diagonal"
+          className="scroll-cue mt-10 opacity-60 hover:opacity-100 transition-opacity animate-pulse-slow" 
+          aria-hidden="true"
+        >
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#E8A000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="7 13 12 18 17 13"></polyline>
+            <polyline points="7 6 12 11 17 6"></polyline>
           </svg>
-        </div>
+        </Link>
       </div>
     </section>
   );

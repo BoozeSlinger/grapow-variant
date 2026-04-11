@@ -29,17 +29,28 @@ export default function SectionSplit({
   const sectionRef = useRef<HTMLElement>(null);
   const inView = useInView(sectionRef, { once: true, margin: "-15% 0px" });
 
+  const isSushi = heading.toLowerCase().includes("sushi");
+
   const textBlock = (
     <div className={`flex-1 ${bg} flex flex-col justify-center px-10 md:px-16 py-16`}>
       <ScrollReveal>
-        <p className="font-[family-name:var(--font-baskerville)] text-[#E8A000] tracking-widest text-xs uppercase mb-3">
-          {eyebrow}
+        <p className={`font-[family-name:var(--font-baskerville)] text-[#E8A000] tracking-widest text-xs uppercase mb-3 ${isSushi ? "animate-pulse" : ""}`}>
+          {isSushi ? (
+            <>
+              Opens at <span className="bg-[#E8A000] text-black px-1.5 py-0.5 font-bold rounded-sm">5PM</span> · <span className="text-red-500 font-bold border-b border-red-500/30">Closed Sun & Mon</span>
+            </>
+          ) : eyebrow}
         </p>
       </ScrollReveal>
       <ScrollReveal delay={0.1}>
-        <h2 className="font-[family-name:var(--font-dancing)] text-5xl md:text-6xl text-white whitespace-pre-line">
+        <motion.h2 
+          initial={{ opacity: 0, x: -20 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8 }}
+          className="font-[family-name:var(--font-dancing)] text-5xl md:text-6xl text-white whitespace-pre-line"
+        >
           {heading}
-        </h2>
+        </motion.h2>
       </ScrollReveal>
       <ScrollReveal delay={0.2}>
         <p className="font-[family-name:var(--font-opensans)] text-gray-300 mt-6 leading-relaxed text-sm md:text-base">

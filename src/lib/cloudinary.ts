@@ -16,7 +16,7 @@ export const ASSETS = {
   // hero columns
   foodBg:     "v1773465967/ChatGPT_Image_Mar_11_2026_08_38_55_AM_wc25u1.png",
   barBg:      "v1773467162/bar-interior_e3lutg.jpg",
-  drinksBg:   "v1773465966/ChatGPT_Image_Mar_11_2026_08_50_58_AM_cw5p4p.png",
+  drinksBg:   "grapow-sports-bar-draft",
   // sections
   fromTheWokBg: "v1773616152/photo-1717321302149-3c6c9c76de67_lxmmtp.jpg",
   eventsBg:   "v1773465971/ChatGPT_Image_Mar_11_2026_08_45_33_AM_ubgaro.png",
