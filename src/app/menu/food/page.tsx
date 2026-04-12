@@ -1,203 +1,242 @@
-import type { Metadata } from "next";
-import Link from "next/link";
+"use client";
 
-export const metadata: Metadata = { title: "Food Menu | Gra Pow" };
+import Link from "next/link";
+import Image from "next/image";
+import { motion } from "framer-motion";
+import { Flame, Star, Leaf, Clock, ArrowRight } from "lucide-react";
+import { useHoursStatus } from "@/hooks/useHoursStatus";
+import Breadcrumbs from "@/components/Breadcrumbs";
+
+const CATEGORIES = [
+  { id: "lunch", label: "Lunch Specials" },
+  { id: "appetizers", label: "Appetizers" },
+  { id: "soup-salad", label: "Soups & Salads" },
+  { id: "entrees", label: "Entrées" },
+  { id: "noddles-rice", label: "Noodles & Rice" },
+  { id: "curry", label: "Curry" },
+  { id: "special", label: "Specials" },
+  { id: "dessert", label: "Dessert" },
+];
+
+const SIGNATURES = [
+  { 
+    name: "Pad Gra Pow", 
+    price: "$22", 
+    desc: "A bold, savory stir-fry with holy basil, garlic, and fresh chilies. Served with jasmine rice and a crispy fried egg.",
+    image: "/images/pad-gra-pow.png",
+    spicy: 3,
+    featured: true 
+  },
+  {
+    name: "Crying Tiger Steak",
+    price: "$30",
+    desc: "Tender New York Steak, grilled to perfection and sliced. Served with our signature 'Jaew' spicy dipping sauce.",
+    spicy: 2,
+    featured: true
+  }
+];
 
 const LUNCH = [
-  { name: "Cashew Chicken",              price: "$18" },
-  { name: "Orange Chicken",              price: "$18" },
-  { name: "B.B.Q. Chicken, Beef or Pork",price: "$18" },
-  { name: "Gra/Pow Chicken or Beef",     price: "$18" },
-  { name: "Yellow Curry Chicken",        price: "$18" },
-  { name: "Red Curry Beef",              price: "$18" },
-  { name: "Eggplant & Tofu",             price: "$18" },
-  { name: "Mixed Vegetable & Tofu",      price: "$18" },
-  { name: "Garlic & Pepper Beef",        price: "$18" },
-  { name: "Green Bean Chicken",          price: "$18" },
-  { name: "Teriyaki Chicken",            price: "$18" },
-  { name: "Broccoli & Beef",             price: "$18" },
-  { name: "Kung Pao Chicken",            price: "$20" },
-  { name: "Mongolian Beef",              price: "$20" },
-  { name: "NY Steak with Garlic Sauce",  price: "$22" },
-  { name: "Salmon with Teriyaki Sauce",  price: "$22" },
-];
-const NOODLE_LUNCH = [
-  { name: "Gra-Pow Noodle Chicken",              price: "$20" },
-  { name: "Chow Mein Noodle (Beef or Chicken)",  price: "$20" },
-  { name: "Pho Noodle Soup",                     price: "$18" },
-  { name: "BBQ Pork with Noodle Soup with Wonton",price:"$18" },
-  { name: "Pad See Aew Chicken",                 price: "$18" },
-  { name: "Pad Thai Chicken",                    price: "$18" },
-  { name: "Seafood Noodle",                      price: "$21" },
-  { name: "Spicy & Sour Noodle Soup",            price: "$20", note: "Min. Spicy 5" },
-];
-const APPETIZERS = [
-  { name: "Egg Rolls (5)",                price: "$12" },
-  { name: "Fresh Spring Roll",            price: "$15" },
-  { name: "Dumplings (10)",               price: "$14" },
-  { name: "Fantastic Four",              price: "$23" },
-  { name: "Deep Fried Calamari",          price: "$17" },
-  { name: "Chicken Slammer (8)",          price: "$15" },
-  { name: "Chips & Thai Salsa",           price: "$13" },
-  { name: "Thai Tacos (3)",               price: "$14" },
-  { name: "Cream Cheese Wontons Pineapples (6)", price: "$11" },
-  { name: "Edamame — Regular",            price: "$10" },
-  { name: "Edamame — Spicy Garlic",       price: "$11" },
-];
-const SOUP = [
-  { name: "Tom Yum — Chicken",   price: "S.$12.50 / L.$16.50" },
-  { name: "Tom Yum — Shrimp",    price: "S.$13.50 / L.$17.50" },
-  { name: "Tom Yum — Seafood",   price: "S.$15.00 / L.$22.50" },
-  { name: "Tom Kha — Chicken",   price: "S.$12.75 / L.$17.00" },
-  { name: "Tom Kha — Shrimp",    price: "S.$13.75 / L.$18.00" },
-  { name: "Buddha Shrimp Wonton Soup", price: "S.$14 / L.$20" },
-  { name: "Thai Rice Soup",      price: "S.$13 / L.$17" },
-  { name: "Tofu & Clear Noodle Soup", price: "S.$13 / L.$17" },
-  { name: "Miso Soup",           price: "S.$9.50 / L.$14.50" },
-];
-const SALAD = [
-  { name: "House Green Salad", price: "Sm.$9 / Lg.$13" },
-  { name: "Larb",              price: "$19" },
-  { name: "Green Papaya Salad",price: "$18" },
-  { name: "Seared Tuna Salad", price: "$23" },
-];
-const ENTREES = [
-  { name: "Pad Gra Pow",          price: "$22 / w/ Fried Egg $23" },
-  { name: "Cashew Chicken",       price: "$22" },
-  { name: "Broccoli & Cauliflower — Chicken/Beef/Pork", price: "$22" },
-  { name: "Broccoli & Cauliflower — Shrimp",            price: "$24" },
-  { name: "Broccoli & Cauliflower — Combo",             price: "$26.50" },
-  { name: "Orange Chicken",       price: "$23" },
-  { name: "Garlic Black Pepper — Chicken/Beef/Pork",    price: "$22" },
-  { name: "Green Beans",          price: "$22" },
-  { name: "B.B.Q. Chicken",       price: "$23" },
-  { name: "B.B.Q. Pork",          price: "$23" },
-  { name: "B.B.Q. Beef",          price: "$23" },
-  { name: "Teriyaki Chicken",     price: "$23" },
-  { name: "NY Steak",             price: "$30" },
-  { name: "Crying Tiger Steak",   price: "$30" },
-  { name: "Eggplant — Tofu",      price: "$21" },
-  { name: "Eggplant — Chicken/Beef/Pork", price: "$22" },
-  { name: "Eggplant — Shrimp",    price: "$24" },
-  { name: "Mixed Vegetable — Tofu",price:"$21" },
-  { name: "Mixed Vegetable — Chicken/Beef/Pork", price: "$22" },
-  { name: "Mongolian Beef",       price: "$23" },
-  { name: "Pad Pik King — Chicken/Beef/Pork", price: "$22" },
-  { name: "Kung Pao — Tofu",      price: "$21" },
-  { name: "Kung Pao — Chicken/Beef/Pork", price: "$22" },
-  { name: "Gra/Pow Seafood",      price: "$30" },
-  { name: "Salmon",               price: "$29" },
-  { name: "Kung Pik Pow",         price: "$26" },
-];
-const NOODLES = [
-  { name: "Asian Noodle",         price: "$23" },
-  { name: "Garlic Noodle — Chicken/Beef/Pork", price: "$22" },
-  { name: "Chowmein Noodle — Chicken/Beef/Pork", price: "$22" },
-  { name: "Pho Noodle — Chicken/Beef/Pork",    price: "$22" },
-  { name: "B.B.Q. Pork Noodle Soup",           price: "$22" },
-  { name: "Wok Fried Rice — Chicken/Beef/Pork",price: "$21.50" },
-  { name: "Wok Fried Rice — Shrimp",           price: "$23.50" },
-  { name: "Seafood Fried Rice",   price: "$28" },
-  { name: "Golden Pineapple Fried Rice", price: "$24" },
-  { name: "Dragon Fried Rice — Chicken/Beef/Pork", price: "$21.50" },
-  { name: "Crab Meat Fried Rice", price: "$27" },
-];
-const CURRY = [
-  { name: "Red Curry — Tofu",     price: "$21" },
-  { name: "Red Curry — Chicken/Beef/Pork", price: "$22" },
-  { name: "Red Curry — Shrimp",   price: "$24" },
-  { name: "Chicken Yellow Curry", price: "$22.50" },
-  { name: "Young Coconut Green Curry — Tofu", price: "$21" },
-  { name: "Young Coconut Green Curry — Chicken/Beef/Pork", price: "$22" },
-  { name: "Young Coconut Green Curry — Shrimp", price: "$24" },
-  { name: "Panange Curry — Tofu", price: "$21" },
-  { name: "Panange Curry — Chicken/Beef/Pork", price: "$22" },
-  { name: "Panange Curry — Shrimp", price: "$24" },
-];
-const SPECIAL = [
-  { name: "Cajun Seafood Boil — Shrimp",      price: "$25" },
-  { name: "Cajun Seafood Boil — Crab",        price: "$55" },
-  { name: "Cajun Seafood Boil — Shrimp+Crab", price: "$45" },
-  { name: "Pork Ramen",                        price: "$21" },
-];
-const SIDES = [
-  { name: "Steamed White or Brown Rice", price: "$5" },
-  { name: "Fried Rice / Sticky Rice",    price: "$6" },
-  { name: "Steamed Vegetable / Stir Fried Spinach", price: "$7" },
-  { name: "Plain Chow Mein & Vegi",      price: "$7" },
-];
-const DESSERT = [
-  { name: "Sweet Sticky Rice w/ Mango",   price: "$13" },
-  { name: "Fried Banana",                 price: "$11" },
-  { name: "Coconut Ice Cream",            price: "$9.50" },
-  { name: "Green Tea Ice Cream",          price: "$9.50" },
-  { name: "Vanilla Ice Cream",            price: "$9" },
-  { name: "Coconut Ice Cream w/ Fried Bananas", price: "$13" },
-  { name: "Chocolate Cake & Ice Cream",   price: "$13" },
+  { name: "Cashew Chicken", price: "$18" },
+  { name: "Orange Chicken", price: "$18", popular: true },
+  { name: "B.B.Q. Chicken, Beef or Pork", price: "$18" },
+  { name: "Gra/Pow Chicken or Beef", price: "$18", spicy: 3 },
+  { name: "Yellow Curry Chicken", price: "$18", spicy: 1 },
+  { name: "Red Curry Beef", price: "$18", spicy: 2 },
+  { name: "Eggplant & Tofu", price: "$18", veggie: true },
+  { name: "Salmon with Teriyaki Sauce", price: "$22" },
 ];
 
-function MenuSection({ title, note, items }: {
-  title: string; note?: string;
-  items: { name: string; price: string; note?: string }[];
-}) {
+const APPETIZERS = [
+  { name: "Egg Rolls (5)", price: "$12", veggie: true },
+  { name: "Fresh Spring Roll", price: "$15", veggie: true },
+  { name: "Dumplings (10)", price: "$14" },
+  { name: "Fantastic Four", price: "$23", desc: "A sampler of our most popular starters." },
+  { name: "Deep Fried Calamari", price: "$17" },
+  { name: "Thai Tacos (3)", price: "$14", spicy: 1 },
+  { name: "Edamame — Spicy Garlic", price: "$11", spicy: 2, veggie: true },
+];
+
+export default function FoodMenu() {
+  const { status, isOpen } = useHoursStatus();
+
   return (
-    <div className="menu-category mb-10">
-      <h3 className="font-[family-name:var(--font-dancing)]">{title}</h3>
-      {note && <p className="text-gray-500 text-xs italic mb-4">{note}</p>}
-      {items.map((item) => (
-        <div key={item.name} className="menu-item">
-          <div>
-            <p className="menu-item-name font-[family-name:var(--font-baskerville)]">{item.name}</p>
-            {item.note && <p className="menu-item-desc">{item.note}</p>}
-          </div>
-          <span className="menu-item-price font-[family-name:var(--font-baskerville)]">{item.price}</span>
+    <main className="min-h-screen bg-[#050505] text-white">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-gold/10 to-transparent -z-10" />
+        <div className="max-w-screen-xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center"
+          >
+            <div className="mb-6 flex justify-center">
+              <Breadcrumbs />
+            </div>
+            <h1 className="font-[family-name:var(--font-dancing)] text-7xl md:text-9xl text-white mb-6">
+              Menu
+            </h1>
+            <p className="font-[family-name:var(--font-baskerville)] text-white/50 text-xs tracking-[0.4em] uppercase max-w-2xl mx-auto leading-loose mb-10">
+              Authentic Thai flavors meets modern culinary artistry. Every dish is a journey through the streets of Bangkok.
+            </p>
+
+            <div className="flex justify-center">
+              <div className="bg-white/5 border border-white/10 px-6 py-3 rounded-full flex items-center gap-3">
+                <span className={`w-2 h-2 rounded-full animate-pulse ${isOpen ? "bg-emerald-400" : "bg-red-400"}`} />
+                <span className="text-[10px] tracking-widest uppercase font-medium">{status}</span>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      ))}
+      </section>
+
+      {/* Signature Showcase */}
+      <section className="max-w-screen-xl mx-auto px-6 py-20">
+        <div className="flex items-center gap-4 mb-12">
+          <Star className="text-gold w-5 h-5 fill-gold" />
+          <h2 className="font-[family-name:var(--font-dancing)] text-4xl">Chef's Signature</h2>
+          <div className="h-px flex-1 bg-white/10" />
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          {SIGNATURES.map((dish) => (
+            <motion.div
+              key={dish.name}
+              initial={{ opacity: 0, scale: 0.95 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="relative group overflow-hidden rounded-[3rem] bg-white/5 border border-white/10 p-2"
+            >
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                {dish.image && (
+                  <div className="relative w-full md:w-1/2 aspect-square rounded-[2.5rem] overflow-hidden">
+                    <Image 
+                      src={dish.image} 
+                      alt={dish.name} 
+                      fill 
+                      className="object-cover group-hover:scale-110 transition-transform duration-700"
+                    />
+                  </div>
+                )}
+                <div className={`p-8 ${dish.image ? 'md:w-1/2' : 'w-full'}`}>
+                  <div className="flex items-center gap-2 mb-4">
+                    {Array.from({ length: dish.spicy || 0 }).map((_, i) => (
+                      <Flame key={i} className="w-4 h-4 text-orange-500 fill-orange-500" />
+                    ))}
+                  </div>
+                  <h3 className="font-[family-name:var(--font-baskerville)] text-3xl mb-4 group-hover:text-gold transition-colors">
+                    {dish.name}
+                  </h3>
+                  <p className="text-white/50 text-sm leading-relaxed mb-6">
+                    {dish.desc}
+                  </p>
+                  <span className="text-2xl text-gold font-light">{dish.price}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      <div className="max-w-screen-xl mx-auto px-6 py-20 flex flex-col lg:flex-row gap-16">
+        {/* Sticky Sidebar Navigation */}
+        <aside className="lg:w-64 flex-shrink-0">
+          <div className="lg:sticky lg:top-32 space-y-2">
+            <p className="text-[10px] tracking-[0.3em] uppercase text-white/30 font-bold mb-6 px-4">Categories</p>
+            {CATEGORIES.map((cat) => (
+              <a 
+                key={cat.id}
+                href={`#${cat.id}`}
+                className="block px-4 py-3 rounded-2xl text-xs tracking-widest uppercase font-medium text-white/50 hover:text-gold hover:bg-white/5 transition-all"
+              >
+                {cat.label}
+              </a>
+            ))}
+          </div>
+        </aside>
+
+        {/* Menu Sections */}
+        <div className="flex-1 space-y-32">
+          
+          <div id="lunch" className="scroll-mt-40">
+            <SectionHeader title="Lunch Specials" note="Served daily until 3:00 p.m. Served with salad, chicken dumpling, and rice." />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+              {LUNCH.map((item) => (
+                <MenuItem key={item.name} {...item} />
+              ))}
+            </div>
+          </div>
+
+          <div id="appetizers" className="scroll-mt-40">
+            <SectionHeader title="Appetizers" />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+              {APPETIZERS.map((item) => (
+                <MenuItem key={item.name} {...item} />
+              ))}
+            </div>
+          </div>
+
+          {/* More sections can be added here with the same pattern */}
+          <div className="p-12 rounded-[4rem] bg-gold text-black text-center relative overflow-hidden">
+            <div className="relative z-10">
+              <h3 className="font-[family-name:var(--font-dancing)] text-5xl mb-6">Hungry yet?</h3>
+              <p className="font-[family-name:var(--font-baskerville)] text-sm tracking-widest uppercase mb-8 opacity-80">
+                Join us for an unforgettable dining experience.
+              </p>
+              <div className="flex justify-center gap-4">
+                <Link href="/reservations" className="bg-black text-white px-10 py-4 rounded-full font-bold text-xs tracking-[0.2em] uppercase hover:scale-105 transition-transform">
+                  Reserve Now
+                </Link>
+                <Link href="/menu/drinks" className="bg-transparent border border-black/20 text-black px-10 py-4 rounded-full font-bold text-xs tracking-[0.2em] uppercase hover:bg-black/5 transition-colors">
+                  Bar Menu
+                </Link>
+              </div>
+            </div>
+            <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 blur-[80px] -z-0 translate-x-1/2 -translate-y-1/2" />
+          </div>
+
+        </div>
+      </div>
+    </main>
+  );
+}
+
+function SectionHeader({ title, note }: { title: string; note?: string }) {
+  return (
+    <div className="mb-12">
+      <h2 className="font-[family-name:var(--font-dancing)] text-5xl mb-4">{title}</h2>
+      {note && (
+        <div className="flex items-start gap-2 text-white/40 italic">
+          <Clock className="w-3 h-3 mt-1 flex-shrink-0" />
+          <p className="text-xs leading-relaxed">{note}</p>
+        </div>
+      )}
     </div>
   );
 }
 
-export default function FoodMenu() {
+function MenuItem({ name, price, desc, popular, spicy, veggie }: any) {
   return (
-    <main className="pt-24 pb-20 px-6 max-w-4xl mx-auto">
-      {/* Page header */}
-      <div className="mb-14 text-center">
-        <Link href="/" className="font-[family-name:var(--font-baskerville)] text-[#E8A000] text-xs tracking-widest uppercase hover:text-[#F5BC30] transition-colors">
-          ← Back to Home
-        </Link>
-        <h1 className="font-[family-name:var(--font-dancing)] text-6xl md:text-7xl text-white mt-6">Food Menu</h1>
-        <p className="font-[family-name:var(--font-baskerville)] text-gray-400 text-sm tracking-widest mt-3 uppercase">
-          Gra Pow Thai &amp; Sports Bar · Riverside, CA
-        </p>
+    <div className="group py-6 border-b border-white/5 hover:border-gold/30 transition-colors">
+      <div className="flex justify-between items-start mb-2">
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-3">
+            <h4 className="font-[family-name:var(--font-baskerville)] text-lg group-hover:text-gold transition-colors leading-tight">
+              {name}
+            </h4>
+            <div className="flex gap-1">
+              {popular && <Star className="w-3 h-3 text-gold fill-gold" />}
+              {veggie && <Leaf className="w-3 h-3 text-green-500 fill-green-500" />}
+              {Array.from({ length: spicy || 0 }).map((_, i) => (
+                <Flame key={i} className="w-3 h-3 text-orange-500 fill-orange-500" />
+              ))}
+            </div>
+          </div>
+          {desc && <p className="text-xs text-white/30 font-light leading-relaxed max-w-sm">{desc}</p>}
+        </div>
+        <span className="text-gold font-medium pt-1">{price}</span>
       </div>
-
-      {/* Tabs for quick navigation */}
-      <div className="flex flex-wrap gap-2 justify-center mb-14">
-        {["Lunch", "Appetizers", "Soup", "Salad", "Entrées", "Noodles & Rice", "Curry", "Special", "Sides", "Dessert"].map((s) => (
-          <a key={s} href={`#${s.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")}`}
-             className="font-[family-name:var(--font-baskerville)] border border-[rgba(232,160,0,0.3)] text-[#E8A000] text-xs px-4 py-2 tracking-widest hover:border-[#E8A000] transition-colors">
-            {s}
-          </a>
-        ))}
-      </div>
-
-      <div id="lunch">
-        <MenuSection
-          title="Lunch Special"
-          note="Served daily until 3:00 p.m. All lunch served with salad, chicken dumpling, fried wonton, and your choice of steamed white, brown rice or fried rice. Chowmein or veggies for an additional cost."
-          items={LUNCH}
-        />
-        <MenuSection title="Noodle Lunch" note="Rice not included w/ noodles" items={NOODLE_LUNCH} />
-      </div>
-      <div id="appetizers"><MenuSection title="Appetizers" items={APPETIZERS} /></div>
-      <div id="soup"><MenuSection title="Soup" items={SOUP} /></div>
-      <div id="salad"><MenuSection title="Salad" items={SALAD} /></div>
-      <div id="entr-es"><MenuSection title="Entrées" items={ENTREES} /></div>
-      <div id="noodles--rice"><MenuSection title="Noodles & Rice Dishes" items={NOODLES} /></div>
-      <div id="curry"><MenuSection title="Curry" items={CURRY} /></div>
-      <div id="special"><MenuSection title="Special Menu" note="Cajun Seafood Boil sides: Corn $3 / Sausage $5 / Potato $3" items={SPECIAL} /></div>
-      <div id="sides"><MenuSection title="Side Orders" items={SIDES} /></div>
-      <div id="dessert"><MenuSection title="Dessert" items={DESSERT} /></div>
-    </main>
+    </div>
   );
 }

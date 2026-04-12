@@ -1,26 +1,38 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
-import { GlassCard } from '@/components/reservations/GlassCard';
-import { PartySelector } from '@/components/reservations/PartySelector';
-import { DateTimePicker } from '@/components/reservations/DateTimePicker';
-import { ContactForm } from '@/components/reservations/ContactForm';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { GlassCard } from './reservations/GlassCard';
+import { PartySelector } from './reservations/PartySelector';
+import { DateTimePicker } from './reservations/DateTimePicker';
+import { ContactForm } from './reservations/ContactForm';
 import { useReservationStore } from '@/store/useReservationStore';
 import { supabase } from '@/lib/supabase';
-import { motion, AnimatePresence } from 'framer-motion';
 
-export default function ReservationsPage() {
+export default function ReservationModal() {
+  const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const store = useReservationStore();
 
+  useEffect(() => {
+    const handleOpen = () => {
+      setIsOpen(true);
+      setStep(1);
+      setSuccess(false);
+    };
+    window.addEventListener("open-reservation", handleOpen);
+    return () => window.removeEventListener("open-reservation", handleOpen);
+  }, []);
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
   const handleNext = () => {
     if (step === 1 && store.date && store.time) {
       setStep(2);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -66,7 +78,6 @@ export default function ReservationsPage() {
       }).catch(err => console.error('Failed to trigger notification:', err));
 
       setSuccess(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error(err);
       alert('Failed to book reservation. Please try again.');
@@ -76,59 +87,42 @@ export default function ReservationsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#111] overflow-hidden">
-      <Header />
-      
-      {/* Background aesthetics */}
-      <div className="fixed inset-0 z-0">
-        <div className="absolute inset-0 bg-[#111]" />
-        <div className="absolute inset-0 bg-gradient-to-br from-gold/5 via-transparent to-transparent opacity-30" />
-        <div className="grain-overlay opacity-[0.1]" />
-      </div>
-
-      <div className="relative z-10 pt-32 pb-24 px-6 max-w-4xl mx-auto">
-        <div className="text-center mb-12">
+    <AnimatePresence>
+      {isOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mb-8 flex justify-center"
-          >
-            <Breadcrumbs />
-          </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="font-[family-name:var(--font-dancing)] text-7xl md:text-9xl text-white mb-8"
-          >
-            Reservations
-          </motion.h1>
-          <motion.div 
-            initial={{ scaleX: 0 }}
-            animate={{ scaleX: 1 }}
-            transition={{ delay: 0.3, duration: 1 }}
-            className="h-px w-32 bg-gold mx-auto mb-10 origin-center opacity-30"
-          />
-          <motion.p 
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="font-[family-name:var(--font-baskerville)] text-gold text-xs tracking-[0.5em] uppercase font-bold"
+            exit={{ opacity: 0 }}
+            onClick={handleClose}
+            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          />
+          
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.9, opacity: 0, y: 20 }}
+            className="relative w-full max-w-2xl bg-[#111] overflow-hidden rounded-3xl border border-white/10"
           >
-            A Riverside Culinary Landmark
-          </motion.p>
-        </div>
+            <div className="absolute top-6 right-6 z-20">
+              <button 
+                onClick={handleClose}
+                className="p-2 text-white/40 hover:text-white transition-colors"
+              >
+                <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
 
-        <AnimatePresence mode="wait">
-          {!success ? (
-            <motion.div
-              key="booking-form"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.6 }}
-            >
-              <GlassCard className="!p-6 md:!p-12">
+            <div className="max-h-[85vh] overflow-y-auto p-6 md:p-12">
+              {!success ? (
                 <div className="space-y-12">
+                  <div className="text-center">
+                    <h2 className="text-3xl font-bold text-white tracking-widest uppercase italic mb-2">Book a Table</h2>
+                    <p className="text-[10px] text-gold font-bold tracking-[0.4em] uppercase">Riverside Dining Experience</p>
+                  </div>
+
                   {step === 1 ? (
                     <>
                       <PartySelector />
@@ -138,7 +132,7 @@ export default function ReservationsPage() {
                         <button
                           onClick={handleNext}
                           disabled={!store.date || !store.time}
-                          className="btn-glow w-full md:w-auto disabled:opacity-30 disabled:grayscale transition-all duration-500"
+                          className="btn-glow w-full disabled:opacity-30 disabled:grayscale transition-all duration-500"
                         >
                           CONTINUE TO DETAILS
                         </button>
@@ -146,11 +140,11 @@ export default function ReservationsPage() {
                     </>
                   ) : (
                     <>
-                      <div className="space-y-2 mb-8">
-                        <h2 className="text-sm font-bold tracking-[0.2em] text-white uppercase italic">
+                      <div className="space-y-2 mb-8 bg-white/5 p-4 rounded-xl border border-white/10">
+                        <h3 className="text-xs font-bold tracking-[0.2em] text-white uppercase italic">
                           Booking for {store.partySize} guests
-                        </h2>
-                        <p className="text-xs text-white/40">
+                        </h3>
+                        <p className="text-[10px] text-white/40 tracking-widest">
                           {store.date?.toDateString()} at {store.time}
                         </p>
                       </div>
@@ -160,7 +154,7 @@ export default function ReservationsPage() {
                           onClick={() => setStep(1)}
                           className="text-[10px] font-bold tracking-[0.25em] text-white/40 uppercase hover:text-white transition-colors py-4 md:py-0"
                         >
-                          ← BACK TO SELECTION
+                          ← BACK
                         </button>
                         <button
                           onClick={handleSubmit}
@@ -173,54 +167,43 @@ export default function ReservationsPage() {
                     </>
                   )}
                 </div>
-              </GlassCard>
-            </motion.div>
-          ) : (
-            <motion.div
-              key="success-message"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.8 }}
-              className="text-center"
-            >
-              <GlassCard className="py-20">
-                <div className="space-y-8">
+              ) : (
+                <div className="text-center py-10">
                   <motion.div 
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ type: "spring", damping: 12, delay: 0.2 }}
-                    className="w-24 h-24 bg-gold rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(232,160,0,0.5)]"
+                    transition={{ type: "spring", damping: 12 }}
+                    className="w-20 h-20 bg-gold rounded-full flex items-center justify-center mx-auto mb-8 shadow-[0_0_30px_rgba(232,160,0,0.5)]"
                   >
-                    <svg className="w-12 h-12 text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-10 h-10 text-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
                     </svg>
                   </motion.div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-white tracking-widest uppercase italic">Confirmed</h2>
+                  <h2 className="text-3xl font-bold text-white tracking-widest uppercase italic mb-4">Confirmed</h2>
                   <div className="space-y-4 max-w-sm mx-auto text-white/60 text-sm leading-relaxed">
                     <p>
                       Thank you, <span className="text-white">{store.firstName}</span>. Your table for <span className="text-white">{store.partySize}</span> is scheduled.
                     </p>
-                    <p className="text-xs tracking-wider border-y border-white/10 py-4 my-6">
+                    <p className="text-xs tracking-wider border-y border-white/10 py-4 my-6 uppercase">
                       {store.date?.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} @ {store.time}
                     </p>
-                    <p>A confirmation has been sent to {store.email}.</p>
+                    <p>A confirmation email has been sent.</p>
                   </div>
                   <div className="pt-10">
                     <button
-                      onClick={() => window.location.href = '/'}
-                      className="btn-outline min-w-[200px]"
+                      onClick={handleClose}
+                      className="btn-outline w-full"
                     >
-                      RETURN HOME
+                      CLOSE
                     </button>
                   </div>
                 </div>
-              </GlassCard>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-      
-      <Footer />
-    </main>
+              )}
+            </div>
+            <div className="grain-overlay opacity-[0.05] pointer-events-none" />
+          </motion.div>
+        </div>
+      )}
+    </AnimatePresence>
   );
 }
