@@ -44,73 +44,85 @@ export default function AboutPage() {
       </section>
 
       {/* Atmosphere Section */}
-      <section className="py-20 px-6">
+      <section className="py-32 px-6">
         <div className="max-w-screen-xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
             <motion.div 
-              initial={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, x: -60 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative aspect-[4/5] rounded-[4rem] overflow-hidden border border-white/10"
+              transition={{ duration: 1.2, ease: "easeOut" }}
+              className="relative aspect-[4/5] rounded-[5rem] overflow-hidden border border-white/5 shadow-2xl group"
             >
               <Image 
-                src="/images/about-atmosphere.png" 
+                src="https://res.cloudinary.com/dqj3xyvey/image/upload/v1773467162/bar-interior_e3lutg.jpg" 
                 alt="Gra Pow Interior" 
                 fill 
-                className="object-cover"
+                className="object-cover group-hover:scale-105 transition-transform duration-[2s]"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-12 left-12">
-                <p className="font-[family-name:var(--font-dancing)] text-4xl text-gold">Riverside's Home for Foodies</p>
-                <p className="text-white/60 text-xs tracking-widest uppercase mt-2">Mission Grove Shopping Center</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
+              <div className="absolute bottom-16 left-16">
+                <span className="text-gold text-[10px] font-black tracking-[0.5em] uppercase mb-4 block">The Vibe</span>
+                <p className="font-[family-name:var(--font-dancing)] text-5xl text-white leading-tight">Riverside's Home <br/>for Foodies</p>
               </div>
             </motion.div>
 
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="space-y-12"
-            >
-              <div>
-                <h2 className="text-sm font-bold tracking-[0.3em] uppercase text-gold mb-6 flex items-center gap-4">
-                  <Utensils className="w-4 h-4" /> The Vision
+            <div className="space-y-16">
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
+              >
+                <h2 className="text-[10px] font-black tracking-[0.4em] uppercase text-gold mb-8 flex items-center gap-4">
+                  <div className="w-8 h-px bg-gold/30" /> OUR PHILOSOPHY
                 </h2>
-                <h3 className="font-[family-name:var(--font-baskerville)] text-4xl md:text-5xl leading-tight mb-8">
-                  Where Thai Heritage Meets <span className="text-gold italic">Modern Fusion</span>
+                <h3 className="font-[family-name:var(--font-baskerville)] text-5xl md:text-6xl leading-[1.1] mb-10 italic">
+                  Where Thai Heritage Meets <span className="text-gold not-italic font-sans font-bold tracking-tighter">MODERN FUSION</span>
                 </h3>
-                <div className="space-y-6 text-white/60 text-lg font-light leading-relaxed">
+                <div className="space-y-8 text-white/50 text-xl font-light leading-relaxed font-[family-name:var(--font-opensans)]">
                   <p>
-                    Founded by visionary Chef-Owner <span className="text-white font-medium">Patrick Sura</span>, Gra Pow Thai & Sports Bar was born from a desire to create a dining destination where world-class Thai cuisine and the electric energy of a sports bar could coexist harmoniously.
+                    Founded by visionary Chef-Owner <span className="text-white font-bold underline decoration-gold/30 decoration-4 underline-offset-8">Patrick Sura</span>, Gra Pow was born from a desire to create a dining destination where world-class Thai cuisine and the electric energy of a sports bar could coexist harmoniously.
                   </p>
                   <p>
                     From our vibrant Pad Gra Pow to our master-crafted sushi selections, every plate is an expression of Chef Patrick's commitment to quality and innovation.
                   </p>
                 </div>
-              </div>
+              </motion.div>
 
-              <div className="grid grid-cols-2 gap-8 py-8 border-y border-white/5">
-                <div>
+              <div className="grid grid-cols-2 gap-12 py-12 border-y border-white/10">
+                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.2 }}>
                   <Award className="text-gold w-6 h-6 mb-4" />
-                  <p className="text-xs tracking-widest uppercase opacity-40 mb-2">Recognized By</p>
-                  <p className="text-sm font-medium">Inland Empire Magazine</p>
-                </div>
-                <div>
+                  <p className="text-[9px] tracking-[0.3em] uppercase text-white/30 mb-2">Recognized By</p>
+                  <p className="text-sm font-bold tracking-wide">Inland Empire Magazine</p>
+                </motion.div>
+                <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} transition={{ delay: 0.3 }}>
                   <Users className="text-gold w-6 h-6 mb-4" />
-                  <p className="text-xs tracking-widest uppercase opacity-40 mb-2">Community</p>
-                  <p className="text-sm font-medium">Riverside's Favorite Since 2010</p>
-                </div>
+                  <p className="text-[9px] tracking-[0.3em] uppercase text-white/30 mb-2">Community</p>
+                  <p className="text-sm font-bold tracking-wide">Favorite Since 2010</p>
+                </motion.div>
               </div>
 
-              <div className="flex gap-6">
-                <Link href="/menu/food" className="bg-white text-black px-10 py-5 rounded-full font-bold text-xs tracking-[0.2em] uppercase hover:scale-105 transition-transform">
-                  Explore Menu
+              <div className="flex flex-col sm:flex-row gap-8">
+                <Link href="/menu/food">
+                  <motion.button 
+                    whileHover={{ scale: 1.05, x: 5 }}
+                    whileTap={{ scale: 0.95 }}
+                    className="btn-gold w-full sm:w-auto px-12 py-6 text-[10px] font-black tracking-[0.3em]"
+                  >
+                    EXPLORE THE MENU
+                  </motion.button>
                 </Link>
-                <Link href="/reservations" className="bg-transparent border border-white/20 text-white px-10 py-5 rounded-full font-bold text-xs tracking-[0.2em] uppercase hover:bg-white/5 transition-colors">
-                  Book Table
-                </Link>
+                <motion.button 
+                  onClick={() => window.dispatchEvent(new CustomEvent("open-reservation"))}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="btn-outline w-full sm:w-auto px-12 py-6 text-[10px] font-black tracking-[0.3em] border-white/10 hover:border-gold"
+                >
+                  RESERVE A TABLE
+                </motion.button>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

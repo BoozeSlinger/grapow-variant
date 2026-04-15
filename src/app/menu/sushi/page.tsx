@@ -202,6 +202,36 @@ export default function SushiMenu() {
           </motion.div>
         </AnimatePresence>
       </div>
+      {/* Footer CTA */}
+      <section className="py-32 border-t border-white/5 bg-[#050505] relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-gold/5 blur-[120px] rounded-full" />
+        <div className="max-w-screen-md mx-auto px-6 text-center relative z-10">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h2 className="font-[family-name:var(--font-dancing)] text-6xl mb-8">The Full Experience</h2>
+            <p className="font-[family-name:var(--font-baskerville)] text-xl text-white/50 mb-12 leading-relaxed italic">
+              Join us at the Sushi Bar for a chef-curated journey through the finest seasonal catches.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <button 
+                onClick={() => window.dispatchEvent(new CustomEvent("open-reservation", { detail: { type: 'dinner' } }))}
+                className="btn-gold px-12 py-5"
+              >
+                RESERVE A SEAT
+              </button>
+              <button 
+                onClick={() => window.dispatchEvent(new CustomEvent("open-reservation", { detail: { type: 'event' } }))}
+                className="btn-outline px-12 py-5 border-white/20 hover:border-gold"
+              >
+                PRIVATE EVENTS
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      </section>
     </main>
   );
 }
@@ -209,35 +239,46 @@ export default function SushiMenu() {
 function MenuItem({ item, index }: { item: any, index: number }) {
   return (
     <motion.div 
-      initial={{ opacity: 0, x: -10 }}
-      animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: index * 0.05 }}
-      className="group relative flex justify-between items-start gap-4 pb-6 border-b border-white/5"
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ 
+        delay: index * 0.05,
+        duration: 0.5,
+        ease: "easeOut"
+      }}
+      className="group relative flex justify-between items-start gap-6 pb-8 border-b border-white/5 hover:border-gold/20 transition-colors"
     >
       <div className="flex-1">
-        <h4 className="font-[family-name:var(--font-baskerville)] text-lg mb-1 group-hover:text-gold transition-colors duration-300">
+        <h4 className="font-[family-name:var(--font-baskerville)] text-xl mb-2 group-hover:text-gold transition-colors duration-300">
           {item.name}
         </h4>
-        <p className="text-white/40 text-[10px] uppercase tracking-widest leading-relaxed">
+        <p className="text-white/30 text-[10px] uppercase tracking-[0.2em] leading-relaxed italic">
           {item.desc}
         </p>
       </div>
       <div className="text-right">
-        <span className="font-[family-name:var(--font-baskerville)] text-gold text-sm whitespace-nowrap">
+        <span className="font-[family-name:var(--font-baskerville)] text-gold text-lg font-bold tracking-tight">
           {item.price}
         </span>
       </div>
+      
+      {/* Decorative dot on hover */}
+      <div className="absolute left-[-1.5rem] top-2 w-1.5 h-1.5 rounded-full bg-gold opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0" />
     </motion.div>
   );
 }
 
 function MenuCategory({ title, items }: { title: string, items: any[] }) {
   return (
-    <div>
-      <h3 className="font-[family-name:var(--font-dancing)] text-4xl text-white/90 mb-8 border-l-2 border-gold pl-6">
-        {title}
-      </h3>
-      <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+    <div className="mb-20 last:mb-0">
+      <ScrollReveal>
+        <h3 className="font-[family-name:var(--font-dancing)] text-5xl text-white mb-12 flex items-center gap-6">
+          {title}
+          <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+        </h3>
+      </ScrollReveal>
+      <div className="grid md:grid-cols-2 gap-x-16 gap-y-2">
         {items.map((item, idx) => (
           <MenuItem key={item.name} item={item} index={idx} />
         ))}

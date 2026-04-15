@@ -6,6 +6,9 @@ import { motion } from "framer-motion";
 import { Flame, Star, Leaf, Clock, ArrowRight } from "lucide-react";
 import { useHoursStatus } from "@/hooks/useHoursStatus";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import ScrollReveal from "@/components/ScrollReveal";
+import { cldImage, ASSETS } from "@/lib/cloudinary";
+import Magnetic from "@/components/Magnetic";
 
 const CATEGORIES = [
   { id: "lunch", label: "Lunch Specials" },
@@ -62,79 +65,107 @@ export default function FoodMenu() {
 
   return (
     <main className="min-h-screen bg-[#050505] text-white">
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-gold/10 to-transparent -z-10" />
-        <div className="max-w-screen-xl mx-auto">
+      {/* ── Premium Hero Section ─────────────────────────── */}
+      <section className="relative min-h-[70vh] flex items-center justify-center overflow-hidden">
+        {/* Background Layer */}
+        <div className="absolute inset-0">
+          <Image
+            src={cldImage(ASSETS.foodBg || "grapow/interior-wide")}
+            alt="Thai Culinary Artistry"
+            fill
+            className="object-cover scale-105 animate-pan"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/40 to-[#050505]" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/60" />
+        </div>
+
+        <div className="relative z-10 max-w-screen-xl mx-auto px-6 text-center">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-center"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
           >
-            <div className="mb-6 flex justify-center">
+            <div className="mb-8 flex justify-center">
               <Breadcrumbs />
             </div>
-            <h1 className="font-[family-name:var(--font-dancing)] text-7xl md:text-9xl text-white mb-6">
-              Menu
-            </h1>
-            <p className="font-[family-name:var(--font-baskerville)] text-white/50 text-xs tracking-[0.4em] uppercase max-w-2xl mx-auto leading-loose mb-10">
-              Authentic Thai flavors meets modern culinary artistry. Every dish is a journey through the streets of Bangkok.
-            </p>
 
-            <div className="flex justify-center">
-              <div className="bg-white/5 border border-white/10 px-6 py-3 rounded-full flex items-center gap-3">
-                <span className={`w-2 h-2 rounded-full animate-pulse ${isOpen ? "bg-emerald-400" : "bg-red-400"}`} />
-                <span className="text-[10px] tracking-widest uppercase font-medium">{status}</span>
-              </div>
+            <div className="inline-flex items-center gap-3 px-4 py-2 rounded-full glass border border-white/10 mb-8 overflow-hidden group">
+              <div className="absolute inset-0 bg-gold/10 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+              <span className={`w-2 h-2 rounded-full ${isOpen ? "bg-emerald-400" : "bg-red-400"} shadow-[0_0_10px_rgba(52,211,153,0.5)]`} />
+              <span className="text-[10px] tracking-[0.3em] uppercase font-bold text-white/80">{status}</span>
             </div>
+            
+            <h1 className="font-[family-name:var(--font-dancing)] text-8xl md:text-[12rem] text-white mb-6 drop-shadow-2xl leading-tight">
+              Food Menu
+            </h1>
+            
+            <p className="font-[family-name:var(--font-baskerville)] text-white/60 text-sm md:text-base tracking-[0.3em] uppercase max-w-2xl mx-auto leading-relaxed italic">
+              Authentic Thai flavors meets modern culinary artistry.
+            </p>
           </motion.div>
         </div>
+        
+        {/* Animated scroll indicator */}
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5 }}
+          className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-4"
+        >
+          <span className="text-[10px] uppercase tracking-[0.4em] text-white/30 font-bold">Scroll to Explore</span>
+          <div className="w-px h-16 bg-gradient-to-b from-gold/50 to-transparent relative overflow-hidden">
+            <motion.div 
+              animate={{ y: [0, 64] }}
+              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+              className="absolute top-0 left-0 w-full h-1/2 bg-white"
+            />
+          </div>
+        </motion.div>
       </section>
 
       {/* Signature Showcase */}
       <section className="max-w-screen-xl mx-auto px-6 py-20">
-        <div className="flex items-center gap-4 mb-12">
-          <Star className="text-gold w-5 h-5 fill-gold" />
-          <h2 className="font-[family-name:var(--font-dancing)] text-4xl">Chef's Signature</h2>
-          <div className="h-px flex-1 bg-white/10" />
-        </div>
+        <ScrollReveal>
+          <div className="flex items-center gap-4 mb-12">
+            <Star className="text-gold w-5 h-5 fill-gold" />
+            <h2 className="font-[family-name:var(--font-dancing)] text-4xl">Chef's Signature</h2>
+            <div className="h-px flex-1 bg-white/10" />
+          </div>
+        </ScrollReveal>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {SIGNATURES.map((dish) => (
-            <motion.div
-              key={dish.name}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="relative group overflow-hidden rounded-[3rem] bg-white/5 border border-white/10 p-2"
-            >
-              <div className="flex flex-col md:flex-row gap-8 items-center">
-                {dish.image && (
-                  <div className="relative w-full md:w-1/2 aspect-square rounded-[2.5rem] overflow-hidden">
-                    <Image 
-                      src={dish.image} 
-                      alt={dish.name} 
-                      fill 
-                      className="object-cover group-hover:scale-110 transition-transform duration-700"
-                    />
+          {SIGNATURES.map((dish, i) => (
+            <ScrollReveal key={dish.name} delay={i * 0.1}>
+              <div className="relative group overflow-hidden rounded-[3rem] bg-white/5 border border-white/10 p-2">
+                <div className="flex flex-col md:flex-row gap-8 items-center">
+                  {dish.image && (
+                    <div className="relative w-full md:w-1/2 aspect-square rounded-[2.5rem] overflow-hidden">
+                      <Image 
+                        src={dish.image} 
+                        alt={dish.name} 
+                        fill 
+                        className="object-cover group-hover:scale-110 transition-transform duration-700"
+                      />
+                    </div>
+                  )}
+                  <div className={`p-8 ${dish.image ? 'md:w-1/2' : 'w-full'}`}>
+                    <div className="flex items-center gap-2 mb-4">
+                      {Array.from({ length: dish.spicy || 0 }).map((_, i) => (
+                        <Flame key={i} className="w-4 h-4 text-orange-500 fill-orange-500" />
+                      ))}
+                    </div>
+                    <h3 className="font-[family-name:var(--font-baskerville)] text-3xl mb-4 group-hover:text-gold transition-colors">
+                      {dish.name}
+                    </h3>
+                    <p className="text-white/50 text-sm leading-relaxed mb-6">
+                      {dish.desc}
+                    </p>
+                    <span className="text-2xl text-gold font-light">{dish.price}</span>
                   </div>
-                )}
-                <div className={`p-8 ${dish.image ? 'md:w-1/2' : 'w-full'}`}>
-                  <div className="flex items-center gap-2 mb-4">
-                    {Array.from({ length: dish.spicy || 0 }).map((_, i) => (
-                      <Flame key={i} className="w-4 h-4 text-orange-500 fill-orange-500" />
-                    ))}
-                  </div>
-                  <h3 className="font-[family-name:var(--font-baskerville)] text-3xl mb-4 group-hover:text-gold transition-colors">
-                    {dish.name}
-                  </h3>
-                  <p className="text-white/50 text-sm leading-relaxed mb-6">
-                    {dish.desc}
-                  </p>
-                  <span className="text-2xl text-gold font-light">{dish.price}</span>
                 </div>
               </div>
-            </motion.div>
+            </ScrollReveal>
           ))}
         </div>
       </section>
@@ -144,14 +175,19 @@ export default function FoodMenu() {
         <aside className="lg:w-64 flex-shrink-0">
           <div className="lg:sticky lg:top-32 space-y-2">
             <p className="text-[10px] tracking-[0.3em] uppercase text-white/30 font-bold mb-6 px-4">Categories</p>
-            {CATEGORIES.map((cat) => (
-              <a 
+            {CATEGORIES.map((cat, i) => (
+              <motion.a 
                 key={cat.id}
                 href={`#${cat.id}`}
-                className="block px-4 py-3 rounded-2xl text-xs tracking-widest uppercase font-medium text-white/50 hover:text-gold hover:bg-white/5 transition-all"
+                whileHover={{ x: 8, color: "var(--gold)" }}
+                whileTap={{ scale: 0.95 }}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 1.2 + i * 0.05 }}
+                className="block px-4 py-3 rounded-2xl text-[10px] tracking-widest uppercase font-bold text-white/40 hover:bg-white/5 transition-all outline-none focus-visible:ring-1 ring-gold"
               >
                 {cat.label}
-              </a>
+              </motion.a>
             ))}
           </div>
         </aside>
@@ -160,41 +196,63 @@ export default function FoodMenu() {
         <div className="flex-1 space-y-32">
           
           <div id="lunch" className="scroll-mt-40">
-            <SectionHeader title="Lunch Specials" note="Served daily until 3:00 p.m. Served with salad, chicken dumpling, and rice." />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-              {LUNCH.map((item) => (
-                <MenuItem key={item.name} {...item} />
+            <ScrollReveal>
+              <SectionHeader title="Lunch Specials" note="Served daily until 3:00 p.m. Served with salad, chicken dumpling, and rice." />
+            </ScrollReveal>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+              {LUNCH.map((item, i) => (
+                <MenuItem key={item.name} {...item} index={i} />
               ))}
             </div>
           </div>
 
           <div id="appetizers" className="scroll-mt-40">
-            <SectionHeader title="Appetizers" />
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
-              {APPETIZERS.map((item) => (
-                <MenuItem key={item.name} {...item} />
+            <ScrollReveal>
+              <SectionHeader title="Appetizers" />
+            </ScrollReveal>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
+              {APPETIZERS.map((item, i) => (
+                <MenuItem key={item.name} {...item} index={i} />
               ))}
             </div>
           </div>
 
           {/* More sections can be added here with the same pattern */}
-          <div className="p-12 rounded-[4rem] bg-gold text-black text-center relative overflow-hidden">
-            <div className="relative z-10">
-              <h3 className="font-[family-name:var(--font-dancing)] text-5xl mb-6">Hungry yet?</h3>
-              <p className="font-[family-name:var(--font-baskerville)] text-sm tracking-widest uppercase mb-8 opacity-80">
-                Join us for an unforgettable dining experience.
-              </p>
-              <div className="flex justify-center gap-4">
-                <Link href="/reservations" className="bg-black text-white px-10 py-4 rounded-full font-bold text-xs tracking-[0.2em] uppercase hover:scale-105 transition-transform">
-                  Reserve Now
-                </Link>
-                <Link href="/menu/drinks" className="bg-transparent border border-black/20 text-black px-10 py-4 rounded-full font-bold text-xs tracking-[0.2em] uppercase hover:bg-black/5 transition-colors">
-                  Bar Menu
-                </Link>
+          <ScrollReveal>
+            <div className="p-12 md:p-24 rounded-[4rem] bg-zinc-900 border border-white/5 text-center relative overflow-hidden group">
+              <div className="relative z-10 max-w-2xl mx-auto">
+                <h3 className="font-[family-name:var(--font-dancing)] text-6xl md:text-8xl mb-8 text-white">Join the Table</h3>
+                <p className="font-[family-name:var(--font-baskerville)] text-lg md:text-xl tracking-wide mb-14 text-white/50 leading-relaxed italic">
+                  An unforgettable fusion of Thai heritage and modern culinary innovation awaits in Mission Grove.
+                </p>
+                <div className="flex flex-col sm:flex-row justify-center items-center gap-10">
+                  <Magnetic strength={0.2}>
+                    <motion.button 
+                      onClick={() => window.dispatchEvent(new CustomEvent("open-reservation"))}
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      className="btn-gold px-12 py-6 text-[10px] font-black tracking-[0.4em] uppercase"
+                    >
+                      BOOK YOUR TABLE
+                    </motion.button>
+                  </Magnetic>
+                  
+                  <Magnetic strength={0.2}>
+                    <Link href="/menu/drinks">
+                      <motion.button 
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                        className="btn-outline px-12 py-6 text-[10px] font-black tracking-[0.4em] uppercase border-white/10 hover:border-gold"
+                      >
+                        EXPLORE THE BAR
+                      </motion.button>
+                    </Link>
+                  </Magnetic>
+                </div>
               </div>
+              <div className="absolute inset-0 bg-gradient-to-tr from-gold/5 via-transparent to-transparent opacity-50" />
             </div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-white/20 blur-[80px] -z-0 translate-x-1/2 -translate-y-1/2" />
-          </div>
+          </ScrollReveal>
 
         </div>
       </div>
@@ -204,39 +262,53 @@ export default function FoodMenu() {
 
 function SectionHeader({ title, note }: { title: string; note?: string }) {
   return (
-    <div className="mb-12">
-      <h2 className="font-[family-name:var(--font-dancing)] text-5xl mb-4">{title}</h2>
+    <div className="mb-14 relative">
+      <h2 className="font-[family-name:var(--font-dancing)] text-5xl md:text-6xl mb-6">{title}</h2>
       {note && (
-        <div className="flex items-start gap-2 text-white/40 italic">
-          <Clock className="w-3 h-3 mt-1 flex-shrink-0" />
-          <p className="text-xs leading-relaxed">{note}</p>
+        <div className="flex items-start gap-2.5 text-white/40 italic max-w-md">
+          <Clock className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-gold/50" />
+          <p className="text-[11px] leading-relaxed tracking-wide">{note}</p>
         </div>
       )}
+      <div className="absolute -left-6 top-1/2 -translate-y-1/2 w-1 h-12 bg-gold/20 rounded-full" />
     </div>
   );
 }
 
-function MenuItem({ name, price, desc, popular, spicy, veggie }: any) {
+function MenuItem({ name, price, desc, popular, spicy, veggie, index }: any) {
   return (
-    <div className="group py-6 border-b border-white/5 hover:border-gold/30 transition-colors">
-      <div className="flex justify-between items-start mb-2">
-        <div className="flex flex-col gap-1">
+    <motion.div 
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ delay: (index % 4) * 0.1 }}
+      className="group py-5 border-b border-white/5 hover:border-gold/20 transition-all duration-500"
+    >
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex flex-col gap-1.5 flex-1">
           <div className="flex items-center gap-3">
-            <h4 className="font-[family-name:var(--font-baskerville)] text-lg group-hover:text-gold transition-colors leading-tight">
+            <h4 className="font-[family-name:var(--font-baskerville)] text-lg md:text-xl group-hover:text-gold transition-colors leading-tight italic">
               {name}
             </h4>
-            <div className="flex gap-1">
-              {popular && <Star className="w-3 h-3 text-gold fill-gold" />}
-              {veggie && <Leaf className="w-3 h-3 text-green-500 fill-green-500" />}
+            <div className="flex gap-1.5 opacity-60 group-hover:opacity-100 transition-opacity">
+              {popular && <Star className="w-3.5 h-3.5 text-gold fill-gold" />}
+              {veggie && <Leaf className="w-3.5 h-3.5 text-green-500 fill-green-500" />}
               {Array.from({ length: spicy || 0 }).map((_, i) => (
-                <Flame key={i} className="w-3 h-3 text-orange-500 fill-orange-500" />
+                <Flame key={i} className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
               ))}
             </div>
           </div>
-          {desc && <p className="text-xs text-white/30 font-light leading-relaxed max-w-sm">{desc}</p>}
+          {desc && (
+            <p className="text-[11px] text-white/30 font-light leading-relaxed max-w-sm group-hover:text-white/50 transition-colors">
+              {desc}
+            </p>
+          )}
         </div>
-        <span className="text-gold font-medium pt-1">{price}</span>
+        <div className="flex flex-col items-end gap-1">
+          <span className="text-gold font-bold text-lg">{price}</span>
+          <ArrowRight className="w-3 h-3 text-gold opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+        </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

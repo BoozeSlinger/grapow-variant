@@ -3,6 +3,10 @@ import { Dancing_Script, Libre_Baskerville, Open_Sans } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CustomCursor from "@/components/CustomCursor";
+import GrainOverlay from "@/components/GrainOverlay";
+import MobileFABs from "@/components/MobileFABs";
+import ReservationModal from "@/components/reservations/ReservationModal";
 
 const dancing = Dancing_Script({
   subsets: ["latin"],
@@ -46,11 +50,15 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dancing.variable} ${baskerville.variable} ${openSans.variable}`}
+      className={`${dancing.variable} ${baskerville.variable} ${openSans.variable} scroll-smooth`}
     >
-      <body className="bg-[#111111] font-[family-name:var(--font-opensans)] antialiased">
+      <body className="bg-[#111111] font-[family-name:var(--font-opensans)] antialiased cursor-none md:cursor-auto">
+        <CustomCursor />
+        <GrainOverlay />
         <Header />
         {children}
+        <MobileFABs />
+        <ReservationModal />
         <Footer />
       </body>
     </html>
