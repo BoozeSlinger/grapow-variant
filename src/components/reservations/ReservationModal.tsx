@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { GlassCard } from './reservations/GlassCard';
-import { PartySelector } from './reservations/PartySelector';
-import { DateTimePicker } from './reservations/DateTimePicker';
-import { ContactForm } from './reservations/ContactForm';
+import { GlassCard } from './GlassCard';
+import { PartySelector } from './PartySelector';
+import { DateTimePicker } from './DateTimePicker';
+import { ContactForm } from './ContactForm';
 import { useReservationStore } from '@/store/useReservationStore';
 import { supabase } from '@/lib/supabase';
 import EventbriteWidget from './EventbriteWidget';
