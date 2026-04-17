@@ -48,9 +48,9 @@ export default function VideoHero() {
     return () => observer.disconnect();
   }, []);
 
-  const webmSrc = cldVideo(ASSETS.heroVideo, "q_auto,f_webm,vc_vp9");
-  const mp4Src  = `${cldVideo(ASSETS.heroVideo, "q_auto,f_mp4,vc_h264")}#t=0.001`;
-  const posterSrc = cldVideo(ASSETS.heroVideo, "so_0,f_jpg,q_auto,w_1280");
+  const webmSrc = cldVideo(ASSETS.heroVideo, "q_auto,so_1.0,f_webm,vc_vp9");
+  const mp4Src  = `${cldVideo(ASSETS.heroVideo, "q_auto,so_1.0,f_mp4,vc_h264")}#t=0.001`;
+  const posterSrc = cldVideo(ASSETS.heroVideo, "so_1.0,f_jpg,q_auto,w_1280");
 
   return (
     <section
@@ -61,7 +61,10 @@ export default function VideoHero() {
       {/* ── Video Background ─────────────────────────────────────────── */}
       <motion.div 
         className="absolute inset-0 w-full h-full"
-        style={{ y: useTransform(scrollY, [0, 500], [0, 150]) }}
+        style={{ 
+          y: useTransform(scrollY, [0, 500], [0, 150]),
+          scale: useTransform(scrollY, [0, 800], [1, 1.15])
+        }}
       >
         <video
           ref={videoRef}
@@ -183,14 +186,25 @@ export default function VideoHero() {
 
         {/* Scroll cue */}
         <Link 
-          href="#our-story"
-          className="mt-12 opacity-40 hover:opacity-100 transition-opacity animate-bounce" 
-          aria-hidden="true"
+          href="#hero-diagonal"
+          className="mt-16 group transition-all duration-500 flex flex-col items-center gap-3 no-underline outline-none"
+          aria-label="Scroll down"
         >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="gold" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <polyline points="7 13 12 18 17 13"></polyline>
-            <polyline points="7 6 12 11 17 6"></polyline>
-          </svg>
+          <span className="text-[9px] tracking-[0.4em] uppercase text-gold/40 group-hover:text-gold transition-colors font-bold">Scroll</span>
+          <div className="relative w-6 h-10 border-2 border-gold/30 rounded-full flex justify-center py-2 overflow-hidden group-hover:border-gold transition-colors">
+            <motion.div 
+              animate={{ 
+                y: [0, 16, 0],
+                opacity: [1, 0, 1]
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="w-1 h-1.5 bg-gold rounded-full" 
+            />
+          </div>
         </Link>
       </div>
     </section>

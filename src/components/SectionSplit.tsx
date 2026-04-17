@@ -50,7 +50,7 @@ export default function SectionSplit({
 
       <ScrollReveal delay={0.1}>
         <motion.h2 
-          className="font-[family-name:var(--font-dancing)] text-5xl md:text-7xl text-white whitespace-pre-line leading-tight"
+          className="font-[family-name:var(--font-dancing)] text-5xl md:text-7xl text-white whitespace-pre-line leading-tight mobile-text-balance"
         >
           {heading}
         </motion.h2>
@@ -118,7 +118,8 @@ export default function SectionSplit({
       />
       
       {/* Decorative corner element */}
-      <div className="absolute bottom-6 right-6 w-12 h-12 border-r-2 border-b-2 border-gold/40 transform scale-0 group-hover:scale-100 transition-transform duration-500" />
+      <div className="absolute bottom-6 right-6 w-12 h-12 border-r-2 border-b-2 border-gold/40 transition-all duration-700 group-hover:w-16 group-hover:h-16 group-hover:border-gold" />
+      <div className="absolute top-6 left-6 w-12 h-12 border-l-2 border-t-2 border-gold/40 transition-all duration-700 group-hover:w-16 group-hover:h-16 group-hover:border-gold" />
     </div>
   );
 
