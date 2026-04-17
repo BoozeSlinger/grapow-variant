@@ -8,7 +8,7 @@ import { DateTimePicker } from './reservations/DateTimePicker';
 import { ContactForm } from './reservations/ContactForm';
 import { useReservationStore } from '@/store/useReservationStore';
 import { supabase } from '@/lib/supabase';
-import { EventbriteWidget } from './EventbriteWidget';
+import EventbriteWidget from './EventbriteWidget';
 
 export default function ReservationModal() {
   const [isOpen, setIsOpen] = useState(false);
