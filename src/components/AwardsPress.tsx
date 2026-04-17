@@ -60,7 +60,16 @@ export default function AwardsPress() {
   return (
     <section id="media" className="relative bg-[#080808] py-20 md:py-28 px-6 overflow-hidden">
       {/* Subtle gold radial glow */}
-      <div
+      <motion.div
+        animate={{
+          scale: [1, 1.2, 1],
+          opacity: [0.07, 0.1, 0.07],
+        }}
+        transition={{
+          duration: 8,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
         className="absolute inset-0 pointer-events-none"
         style={{
           background: "radial-gradient(ellipse 70% 50% at 50% 60%, rgba(232,160,0,0.07) 0%, transparent 70%)",
@@ -107,49 +116,54 @@ export default function AwardsPress() {
         </motion.div>
 
         {/* Badge row — always horizontal, 3 equal columns */}
-        <div className="grid grid-cols-3 items-start justify-items-center gap-4 sm:gap-12">
+        <div className="grid grid-cols-3 items-start justify-items-center gap-4 sm:gap-12 md:gap-20">
           {AWARDS.map((award, i) => (
             <motion.a
               key={award.year}
               href={award.href}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, scale: 0.8 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, scale: 0.5, rotate: -10 }}
+              whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
               viewport={{ once: true, margin: "-60px" }}
               transition={{
-                duration: 0.8,
-                delay: i * 0.15,
-                ease: [0.34, 1.56, 0.64, 1],
+                duration: 1,
+                delay: i * 0.2,
+                type: "spring",
+                stiffness: 100,
+                damping: 15
               }}
-              whileHover={{ scale: 1.1, transition: { duration: 0.25 } }}
+              whileHover={{ 
+                y: -10,
+                transition: { duration: 0.3, ease: "easeOut" }
+              }}
               className="flex flex-col items-center gap-4 group cursor-pointer"
               aria-label={`Best of Inland Empire ${award.year} – Best Thai Food`}
             >
               {/* Badge image */}
-              <div className="relative w-24 h-24 sm:w-36 sm:h-36 md:w-40 md:h-40 drop-shadow-2xl">
+              <div className="relative w-20 h-20 sm:w-32 sm:h-32 md:w-36 md:h-36 drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)] group-hover:drop-shadow-[0_20px_40px_rgba(232,160,0,0.3)] transition-all duration-500">
                 <Image
                   src={cldImage(award.badgeSrc, "w_320,h_320,c_fit,f_auto,q_auto")}
                   alt={`Best of Inland Empire ${award.year} badge`}
                   fill
                   className="object-contain"
-                  sizes="160px"
+                  sizes="(max-width: 768px) 30vw, 160px"
                 />
               </div>
 
               {/* Year + link cue */}
               <div className="text-center relative">
                 <p
-                  className="text-[#E8A000] text-sm tracking-[0.2em] uppercase"
+                  className="text-white/60 text-[10px] md:text-sm tracking-[0.2em] uppercase transition-colors group-hover:text-[#E8A000]"
                   style={{ fontFamily: "Georgia, serif" }}
                 >
                   {award.year}
                 </p>
-                <p className="text-gray-600 text-[10px] tracking-widest uppercase mt-1 group-hover:text-[#E8A000]/80 transition-colors duration-300">
-                  Read Article →
-                </p>
-                {/* Center growing underline */}
-                <span className="absolute -bottom-1 left-1/2 w-0 h-[1px] bg-[#E8A000] transition-all duration-300 group-hover:w-full group-hover:left-0" />
+                <div className="overflow-hidden h-4 md:h-5 mt-1">
+                  <p className="text-[#E8A000] text-[9px] md:text-[10px] tracking-widest uppercase transform translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                    View Winner →
+                  </p>
+                </div>
               </div>
             </motion.a>
           ))}
@@ -174,20 +188,23 @@ export default function AwardsPress() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] as [number, number, number, number] }}
-                whileHover={{ scale: 1.04, transition: { duration: 0.2 } }}
-                className="group relative rounded-xl overflow-hidden aspect-[3/4] block"
-                style={{ boxShadow: "0 0 0 1px rgba(232,160,0,0.15), 0 8px 32px rgba(0,0,0,0.4)" }}
+                viewport={{ once: true, margin: "-10px" }}
+                transition={{ duration: 0.6, delay: i * 0.1, ease: [0.22, 1, 0.36, 1] }}
+                whileHover={{ 
+                  y: -5,
+                  boxShadow: "0 20px 40px rgba(232,160,0,0.2)",
+                  borderColor: "rgba(232,160,0,0.5)"
+                }}
+                className="group relative rounded-xl overflow-hidden aspect-[3/4] block border border-transparent transition-all duration-300"
                 aria-label={`${item.title} — ${item.publication} ${item.year}`}
               >
                 <Image
                   src={item.imgSrc}
                   alt={`${item.title} — ${item.publication}`}
                   fill
-                  className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-500"
+                  className="object-cover object-top grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-110"
                   sizes="(max-width: 640px) 50vw, 25vw"
                   unoptimized
                 />

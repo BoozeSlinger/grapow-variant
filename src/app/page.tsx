@@ -16,17 +16,22 @@ export default function Home() {
       <HeroDiagonal />
 
       {/* 3. Tagline */}
-      <section className="bg-[#111111] py-10 md:py-14 text-center px-6">
-        <ScrollReveal>
-          <h2 className="font-[family-name:var(--font-dancing)] text-[3.45rem] md:text-[5.2rem] text-[#E8A000] leading-tight">
-            Gra Pow Riverside
-          </h2>
-        </ScrollReveal>
-        <ScrollReveal delay={0.15}>
-          <p className="font-[family-name:var(--font-baskerville)] text-gray-400 mt-4 tracking-widest text-[0.86rem] md:text-base uppercase">
-            Thai Kitchen &amp; Sports Bar — Riverside, CA
-          </p>
-        </ScrollReveal>
+      <section className="bg-[#111111] py-16 md:py-24 text-center px-6">
+        <div className="max-w-4xl mx-auto">
+          <ScrollReveal>
+            <h2 className="font-[family-name:var(--font-dancing)] text-4xl md:text-[5.5rem] text-[#E8A000] leading-tight mobile-text-balance">
+              Gra Pow Riverside
+            </h2>
+          </ScrollReveal>
+          <ScrollReveal delay={0.2}>
+            <div className="h-px w-24 bg-gold/30 mx-auto my-8" />
+          </ScrollReveal>
+          <ScrollReveal delay={0.3}>
+            <p className="font-[family-name:var(--font-baskerville)] text-gray-400 tracking-[0.3em] text-[0.75rem] md:text-base uppercase max-w-lg mx-auto leading-relaxed">
+              Authentic Thai Kitchen &amp; Premium Sports Bar — Heart of Riverside, CA
+            </p>
+          </ScrollReveal>
+        </div>
       </section>
 
       {/* 4. Events — image left, text right */}

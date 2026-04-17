@@ -81,18 +81,25 @@ export default function HeroDiagonal() {
             
             {/* Action Overlay Color */}
             <div className="absolute inset-0 bg-[#E8A000]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            
+            {/* Shimmer effect */}
+            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none">
+              <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-20deg] animate-shine" 
+                   style={{ width: '200%', left: '-100%' }} />
+            </div>
 
             {/* Label + CTA */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center gap-6">
+            <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 md:gap-6 px-4">
               <motion.h2 
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
                 transition={{ delay: i * 0.2 + 0.4 }}
-                className="font-[family-name:var(--font-dancing)] text-6xl md:text-7xl text-white drop-shadow-xl"
+                className="font-[family-name:var(--font-dancing)] text-5xl md:text-7xl text-white drop-shadow-xl select-none"
               >
                 {col.label}
               </motion.h2>
-              <span className="btn-outline opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500">
+              <div className="h-0.5 w-0 md:group-hover:w-20 bg-gold transition-all duration-700 ease-out rounded-full" />
+              <span className="btn-outline opacity-0 group-hover:opacity-100 transform translate-y-4 group-hover:translate-y-0 transition-all duration-500 scale-90 md:scale-100">
                 Explore
               </span>
             </div>
