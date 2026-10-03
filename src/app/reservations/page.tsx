@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { GlassCard } from '@/components/reservations/GlassCard';
 import { PartySelector } from '@/components/reservations/PartySelector';
 import { DateTimePicker } from '@/components/reservations/DateTimePicker';

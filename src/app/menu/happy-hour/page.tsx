@@ -165,9 +165,6 @@ export default function HappyHourMenu() {
         </div>
       </section>
 
-        </div>
-      </section>
-
       {/* CTA Section */}
       <section className="py-24 border-t border-white/5 bg-[#080808]">
         <div className="max-w-screen-md mx-auto px-6 text-center">

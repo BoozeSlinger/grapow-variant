@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ChevronRight, Clock, MapPin, Search } from "lucide-react";
 import { useHoursStatus } from "@/hooks/useHoursStatus";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import ScrollReveal from "@/components/ScrollReveal";
 
 const SASHIMI = [
   { name: "Tuna",         price: "Sushi(2) $12.50 / Sashimi(5) $20.50", desc: "Fresh Bigeye Tuna" },
