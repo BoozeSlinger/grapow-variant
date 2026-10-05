@@ -1,30 +1,61 @@
-const CLOUD = "dqj3xyvey";
-const BASE  = `https://res.cloudinary.com/${CLOUD}`;
+/**
+ * Image delivery (spec §6.1). Per-image loaders for `getImageProps` — there is no global loaderFile,
+ * so local /public assets keep Next's default loader. Pure TypeScript: safe in Server Components.
+ */
+import type { ImageLoader } from "next/image";
+import { PHOTOS, type PhotoEntry, type PhotoKey, type PhotoRecipe } from "@/data/photos";
 
-export function cldImage(publicId: string, transforms = "f_auto,q_auto") {
-  return `${BASE}/image/upload/${transforms}/${publicId}`;
+export const CLOUD = "dqj3xyvey";
+export const CLD_BASE = `https://res.cloudinary.com/${CLOUD}`;
+
+/** `{base}/image/upload/{pre/}{main},w_{w}/f_auto,q_{q ?? 'auto'}/{publicId}` — width capped at `recipe.maxW` (never upscaled). */
+export function cldUrl(publicId: string, recipe: PhotoRecipe, width: number, quality?: number): string {
+  const w = Math.min(Math.round(width), recipe.maxW);
+  const pre = recipe.pre ? `${recipe.pre}/` : "";
+  const main = recipe.main ? `${recipe.main},w_${w}` : `w_${w}`;
+  return `${CLD_BASE}/image/upload/${pre}${main}/f_auto,q_${quality ?? "auto"}/${publicId}`;
 }
 
-export function cldVideo(publicId: string, transforms = "q_auto") {
-  return `${BASE}/video/upload/${transforms}/${publicId}`;
+/** WordPress / Jetpack press scans: `${src}?w=${w}&quality=${q ?? 75}&strip=all`. */
+export function wpUrl(src: string, recipe: PhotoRecipe, width: number, quality?: number): string {
+  const w = Math.min(Math.round(width), recipe.maxW);
+  return `${src}?w=${w}&quality=${quality ?? 75}&strip=all`;
 }
 
-// ── Named assets ─────────────────────────────────────────
-export const ASSETS = {
-  logo:       "v1773466015/background_removed_image_4n1wXXSKQ9eYzg39SUhGWQ_ywnqei.png",
-  heroVideo:  "v1773499070/202603140730_zllqmo.mp4",
-  // hero columns
-  foodBg:     "v1773465967/ChatGPT_Image_Mar_11_2026_08_38_55_AM_wc25u1.png",
-  barBg:      "v1773467162/bar-interior_e3lutg.jpg",
-  drinksBg:   "v1773244271/ChatGPT_Image_Mar_11_2026_08_50_58_AM_zwbkhr.png",
-  // sections
-  fromTheWokBg: "v1773616152/photo-1717321302149-3c6c9c76de67_lxmmtp.jpg",
-  eventsBg:   "v1773465971/ChatGPT_Image_Mar_11_2026_08_45_33_AM_ubgaro.png",
-  sushiBg:    "v1773613175/cropped-IMG_5383-scaled-1_glbkjb.jpg",
-  aboutBg:    "v1773243954/ChatGPT_Image_Mar_11_2026_08_45_33_AM_lauctt.png",
-  wookBg:     "v1773465967/ChatGPT_Image_Mar_11_2026_08_38_55_AM_wc25u1.png",
-  // awards — Best of Inland Empire badge images
-  bieLogo2019: "v1773614798/BIE_smLogo_2019-1-38_ucd4th.png",
-  bieLogo2020: "v1773615014/BIE-LOGO-0920-v3-95_bwklhs.png",
-  bieLogo2023: "v1773613942/background_removed_image_9LCbtRQaR4q_tEISapRSyw_cviunc.png",
-};
+/** The URL for one registry photo at one width. */
+export function photoSrc(entry: PhotoEntry, recipe: PhotoRecipe, width: number, quality?: number): string {
+  return entry.source === "wp" ? wpUrl(entry.publicId, recipe, width, quality) : cldUrl(entry.publicId, recipe, width, quality);
+}
+
+/** A next/image loader bound to one photo + recipe. Pass to `getImageProps({ loader })` in a Server Component only. */
+export function photoLoader(entry: PhotoEntry, recipe: PhotoRecipe): ImageLoader {
+  return ({ width, quality }) => photoSrc(entry, recipe, width, quality);
+}
+
+/** Convenience: an absolute URL for a registry slot (e.g. Open Graph images). */
+export function photoUrl(key: PhotoKey, slot: string, width: number, which: "desktop" | "mobile" = "desktop"): string {
+  const entry = PHOTOS[key];
+  const s = entry.slots[slot];
+  if (!s) throw new Error(`Unknown photo slot "${key}.${slot}"`);
+  const recipe = which === "mobile" ? (s.mobile ?? s.desktop) : s.desktop;
+  return photoSrc(entry, recipe, width);
+}
+
+/**
+ * Rewrites a `srcSet` so each candidate's descriptor matches the width actually delivered
+ * (capped at maxW) and drops duplicates — the browser never picks an "upscaled" candidate.
+ */
+export function capSrcSet(srcSet: string | undefined, maxW: number): string | undefined {
+  if (!srcSet) return srcSet;
+  const seen = new Set<number>();
+  const out: string[] = [];
+  for (const cand of srcSet.split(", ")) {
+    const m = cand.match(/^(\S+) (\d+)w$/);
+    if (!m) { out.push(cand); continue; }
+    const w = Math.min(Number(m[2]), maxW);
+    if (seen.has(w)) continue;
+    seen.add(w);
+    out.push(`${m[1]} ${w}w`);
+  }
+  return out.join(", ");
+}

@@ -1,22 +1,30 @@
 'use client';
 
+// FLAGGED (spec §18, H2): this staff view reads with the anon key from the client, so RLS returns
+// nothing until auth and a server-side data path exist. Functionally unchanged otherwise.
 import React, { useEffect, useState } from 'react';
-import Header from '@/components/Header';
-import { supabase } from '@/lib/supabase';
-import { motion } from 'framer-motion';
+import { supabase, supabaseConfigured } from '@/lib/supabase';
+import { formatClock, formatDateShort, laParts } from '@/lib/la-time';
+import type { Reservation } from '@/types/reservations';
+
+function laWhen(iso: string): string {
+  const p = laParts(new Date(iso));
+  return `${formatDateShort(p.dateISO)} · ${formatClock(p.minutes)} PT`;
+}
 
 export default function AdminReservations() {
-  const [reservations, setReservations] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [loading, setLoading] = useState(supabaseConfigured);
 
   useEffect(() => {
+    if (!supabaseConfigured) return;
     async function fetchReservations() {
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from('reservations')
         .select('*')
         .order('reservation_time', { ascending: true });
-      
-      if (data) setReservations(data);
+
+      if (data) setReservations(data as Reservation[]);
       setLoading(false);
     }
     fetchReservations();
@@ -27,52 +35,55 @@ export default function AdminReservations() {
       .from('reservations')
       .update({ status })
       .eq('id', id);
-    
+
     if (!error) {
-      setReservations(prev => prev.map(r => r.id === id ? { ...r, status } : r));
+      setReservations(prev => prev.map(r => r.id === id ? { ...r, status: status as Reservation['status'] } : r));
     }
   };
 
   return (
-    <main className="min-h-screen bg-[#0a0a0a] text-white pt-32 px-6">
-      <Header />
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 uppercase tracking-tighter italic">Incoming Reservations</h1>
-        
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <div className="grid gap-4">
-            {reservations.map(res => (
-              <div key={res.id} className="bg-white/5 border border-white/10 p-6 rounded-lg flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                  <div className="flex items-center gap-3 mb-1">
-                    <span className="text-xl font-bold">{res.first_name} {res.last_name}</span>
-                    <span className="text-[10px] bg-gold text-black px-2 py-0.5 font-bold uppercase tracking-widest">{res.party_size} GUESTS</span>
-                  </div>
-                  <p className="text-white/60 text-sm">
-                    {new Date(res.reservation_time).toLocaleString()} • {res.phone}
-                  </p>
-                  {res.notes && <p className="text-white/40 text-xs mt-2 italic">"{res.notes}"</p>}
-                </div>
+    <main>
+      <h1 className="t-d2 mb-8">Incoming reservations</h1>
 
-                <div className="flex gap-2">
-                  <select 
-                    value={res.status}
-                    onChange={(e) => updateStatus(res.id, e.target.value)}
-                    className="bg-black border border-white/20 text-xs p-2 uppercase tracking-widest"
-                  >
-                    <option value="pending">Pending</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="seated">Seated</option>
-                    <option value="cancelled">Cancelled</option>
-                  </select>
+      {!supabaseConfigured ? (
+        <p className="t-body text-fg-muted">Supabase isn&rsquo;t configured for this deployment.</p>
+      ) : loading ? (
+        <p className="t-body">Loading…</p>
+      ) : reservations.length === 0 ? (
+        <p className="t-body text-fg-muted">No reservations to show.</p>
+      ) : (
+        <div className="grid gap-4">
+          {reservations.map(res => (
+            <div key={res.id} className="bg-bg-raised border border-line p-6 rounded-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <span className="t-title">{res.first_name} {res.last_name}</span>
+                  <span className="t-label bg-yolk text-char px-2 py-0.5 rounded-sm">{res.party_size} guests</span>
                 </div>
+                <p className="t-small text-fg-muted tnum">
+                  {laWhen(res.reservation_time)} · {res.phone}
+                </p>
+                {res.notes && <p className="t-small text-fg-muted mt-2">&ldquo;{res.notes}&rdquo;</p>}
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+
+              <div className="flex gap-2">
+                <label className="sr-only" htmlFor={`status-${res.id}`}>Status</label>
+                <select
+                  id={`status-${res.id}`}
+                  value={res.status}
+                  onChange={(e) => res.id && updateStatus(res.id, e.target.value)}
+                  className="bg-bg border border-line t-label h-11 px-3 rounded-sm"
+                >
+                  <option value="pending">Pending</option>
+                  <option value="confirmed">Booked (confirmed)</option>
+                  <option value="seated">Seated</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
     </main>
   );
 }

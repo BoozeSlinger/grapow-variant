@@ -1,65 +1,40 @@
-import type { Metadata } from "next";
-import { Dancing_Script, Libre_Baskerville, Open_Sans } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Archivo, Newsreader } from "next/font/google";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import CustomCursor from "@/components/CustomCursor";
-import GrainOverlay from "@/components/GrainOverlay";
-import MobileFABs from "@/components/MobileFABs";
-import ReservationModal from "@/components/reservations/ReservationModal";
+import MotionProvider from "@/components/ui/MotionProvider";
+import { PHOTOS } from "@/data/photos";
+import { SITE_DESCRIPTION, SITE_TITLE, VENUE } from "@/data/venue";
+import { CLD_BASE } from "@/lib/cloudinary";
 
-const dancing = Dancing_Script({
-  subsets: ["latin"],
-  weight: ["600", "700"],
-  variable: "--font-dancing",
-  display: "swap",
-});
+// Variable wght 100–900 + wdth 62–125; tabular figures. Preloaded.
+const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
+// Italic only (no opsz axis). Not preloaded: never the LCP.
+const newsreader = Newsreader({ subsets: ["latin"], style: ["italic"], variable: "--font-newsreader", display: "swap", preload: false });
 
-const baskerville = Libre_Baskerville({
-  subsets: ["latin"],
-  weight: ["400", "700"],
-  style: ["normal", "italic"],
-  variable: "--font-baskerville",
-  display: "swap",
-});
-
-const openSans = Open_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "600"],
-  variable: "--font-opensans",
-  display: "swap",
-});
+const OG_IMAGE = `${CLD_BASE}/image/upload/c_fill,g_east,w_1200,h_630,e_vibrance:-10,e_contrast:10/f_jpg,q_auto/${PHOTOS.roomBar.publicId}`;
 
 export const metadata: Metadata = {
-  title: "Gra Pow Thai & Sports Bar | Riverside, CA",
-  description:
-    "Gra Pow — bold Thai flavors, craft cocktails, and the best sports bar in Riverside, CA. Happy Hour daily 3–6PM. Sushi Bar opens at 5PM.",
+  metadataBase: new URL(VENUE.siteUrl),
+  title: { default: SITE_TITLE, template: `%s — ${VENUE.name}, ${VENUE.address.city}` },
+  description: SITE_DESCRIPTION,
   openGraph: {
-    title: "Gra Pow Thai & Sports Bar",
-    description: "Thai Kitchen & Sports Bar in Riverside, CA",
-    locale: "en_US",
     type: "website",
+    locale: "en_US",
+    siteName: VENUE.name,
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
+    images: [{ url: OG_IMAGE, width: 1200, height: 630, alt: PHOTOS.roomBar.alt }],
   },
+  twitter: { card: "summary_large_image" },
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport: Viewport = { width: "device-width", initialScale: 1, viewportFit: "cover", themeColor: "#0F0D0C" };
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      className={`${dancing.variable} ${baskerville.variable} ${openSans.variable} scroll-smooth`}
-    >
-      <body className="bg-[#111111] font-[family-name:var(--font-opensans)] antialiased cursor-none md:cursor-auto">
-        <CustomCursor />
-        <GrainOverlay />
-        <Header />
-        {children}
-        <MobileFABs />
-        <ReservationModal />
-        <Footer />
+    <html lang="en" data-scroll-behavior="smooth" className={`${archivo.variable} ${newsreader.variable}`}>
+      <body data-ground="ink" className="bg-bg text-fg font-sans antialiased">
+        <MotionProvider>{children}</MotionProvider>
       </body>
     </html>
   );
