@@ -7,14 +7,15 @@ import { PartySelector } from './PartySelector';
 import { DateTimePicker } from './DateTimePicker';
 import { ContactForm } from './ContactForm';
 import { useReservationStore } from '@/store/useReservationStore';
-import { supabase } from '@/lib/supabase';
-import EventbriteWidget from './EventbriteWidget';
+import { postBooking, RESTAURANT_PHONE } from '@/lib/booking-client';
+import { formatTime12, toISODate } from '@/lib/dates';
 
 export default function ReservationModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [step, setStep] = useState(1);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [type, setType] = useState<'dinner' | 'event'>('dinner');
   const store = useReservationStore();
 
@@ -23,6 +24,7 @@ export default function ReservationModal() {
       setIsOpen(true);
       setStep(1);
       setSuccess(false);
+      setError(null);
       if (e.detail?.type) setType(e.detail.type);
     };
     window.addEventListener("open-reservation", handleOpen);
@@ -44,46 +46,23 @@ export default function ReservationModal() {
   const handleSubmit = async () => {
     if (!store.firstName || !store.email || !store.phone) return;
     
+    if (type === 'dinner' && (!store.date || !store.time)) return;
+
     setLoading(true);
-    try {
-      if (type === 'dinner') {
-        if (!store.date || !store.time) return;
-        const [hours, minutes] = store.time.split(':');
-        const reservationTime = new Date(store.date);
-        reservationTime.setHours(parseInt(hours), parseInt(minutes));
-
-        const { error } = await supabase.from('reservations').insert({
-          party_size: store.partySize,
-          reservation_time: reservationTime.toISOString(),
-          first_name: store.firstName,
-          last_name: store.lastName,
-          email: store.email,
-          phone: store.phone,
-          notes: store.notes,
-        });
-        if (error) throw error;
-      } else {
-        await fetch('/api/inquiry', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            firstName: store.firstName,
-            lastName: store.lastName,
-            email: store.email,
-            phone: store.phone,
-            notes: store.notes,
-            type: 'event_interest',
-          })
-        });
-      }
-
-      setSuccess(true);
-    } catch (err) {
-      console.error(err);
-      alert('Failed to process. Please try again.');
-    } finally {
-      setLoading(false);
-    }
+    setError(null);
+    const contact = {
+      firstName: store.firstName,
+      lastName: store.lastName,
+      email: store.email,
+      phone: store.phone,
+      notes: store.notes,
+    };
+    const problem = type === 'dinner'
+      ? await postBooking('/api/reservations', { ...contact, partySize: store.partySize, date: toISODate(store.date!), time: store.time })
+      : await postBooking('/api/inquiry', { ...contact, type: 'event_interest' });
+    setLoading(false);
+    if (problem) setError(problem);
+    else setSuccess(true);
   };
 
   return (
@@ -184,16 +163,24 @@ export default function ReservationModal() {
                             {type === 'dinner' ? `${store.partySize} Guests · ${store.date?.toDateString()} @ ${store.time}` : 'Event & Group Inquiry'}
                           </p>
                         </div>
-                        <button onClick={() => setStep(1)} className="text-[9px] font-black tracking-[0.1em] text-white/40 hover:text-gold transition-colors underline">EDIT</button>
+                        <button onClick={() => { setStep(1); setError(null); }} className="text-[9px] font-black tracking-[0.1em] text-white/40 hover:text-gold transition-colors underline">EDIT</button>
                       </div>
                       <ContactForm />
+                      {error && (
+                        <div role="alert" className="border border-red-400/40 bg-red-500/10 p-4 text-sm text-white/90">
+                          <p>{error}</p>
+                          <a href={RESTAURANT_PHONE.href} className="mt-2 inline-block font-bold text-gold underline">
+                            Call {RESTAURANT_PHONE.display}
+                          </a>
+                        </div>
+                      )}
                       <div className="flex flex-col-reverse md:flex-row gap-6 justify-between pt-10 border-t border-white/10">
                         <button
                           onClick={handleSubmit}
                           disabled={loading || !store.firstName || !store.email || !store.phone}
                           className="btn-gold w-full p-6 text-xs font-black tracking-[0.3em] shadow-[0_15px_30px_rgba(232,160,0,0.3)]"
                         >
-                          {loading ? 'PROCESSING...' : (type === 'dinner' ? 'CONFIRM RESERVATION' : 'SEND INQUIRY')}
+                          {loading ? 'SENDING...' : (type === 'dinner' ? 'REQUEST TABLE' : 'SEND INQUIRY')}
                         </button>
                       </div>
                     </motion.div>
@@ -211,28 +198,22 @@ export default function ReservationModal() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
                     </svg>
                   </motion.div>
-                  <h2 className="text-3xl font-bold text-white tracking-widest uppercase italic mb-4">{type === 'dinner' ? 'Confirmed' : 'Inquiry Sent'}</h2>
+                  <h2 className="text-3xl font-bold text-white tracking-widest uppercase italic mb-4">{type === 'dinner' ? 'Request Received' : 'Inquiry Received'}</h2>
                   <div className="space-y-4 max-w-sm mx-auto text-white/60 text-sm leading-relaxed mb-10">
                     {type === 'dinner' ? (
                       <>
                         <p>
-                          Thank you, <span className="text-white">{store.firstName}</span>. Your table for <span className="text-white">{store.partySize}</span> is scheduled.
+                          Thank you, <span className="text-white">{store.firstName}</span>. We&apos;ve received your request for a table for <span className="text-white">{store.partySize}</span>.
                         </p>
                         <p className="text-xs tracking-wider border-y border-white/10 py-4 my-6 uppercase">
-                          {store.date?.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} @ {store.time}
+                          {store.date?.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} @ {store.time && formatTime12(store.time)}
                         </p>
-                        <p>A confirmation email has been sent.</p>
+                        <p>We&apos;ll call or text you at <span className="text-white">{store.phone}</span> to confirm.</p>
                       </>
                     ) : (
-                      <>
-                        <p>
-                          Thank you, <span className="text-white">{store.firstName}</span>. We've received your event inquiry and will contact you shortly.
-                        </p>
-                        <div className="py-8">
-                          <p className="text-[10px] text-white/40 uppercase tracking-widest mb-6">Or get tickets now for upcoming matches:</p>
-                          <EventbriteWidget eventId="123456789" />
-                        </div>
-                      </>
+                      <p>
+                        Thank you, <span className="text-white">{store.firstName}</span>. We&apos;ve received your event inquiry and will contact you shortly.
+                      </p>
                     )}
                   </div>
                   <div className="pt-10">

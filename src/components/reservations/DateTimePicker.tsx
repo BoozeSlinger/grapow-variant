@@ -3,6 +3,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { useReservationStore } from '@/store/useReservationStore';
+import { fromISODate, laTodayISO, toISODate } from '@/lib/dates';
 
 export const DateTimePicker: React.FC = () => {
   const { date, setDate, time, setTime } = useReservationStore();
@@ -13,11 +14,11 @@ export const DateTimePicker: React.FC = () => {
   ];
 
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setDate(e.target.value ? new Date(e.target.value) : null);
+    setDate(e.target.value ? fromISODate(e.target.value) : null);
   };
 
   // Format date for the input value
-  const dateValue = date ? date.toISOString().split('T')[0] : '';
+  const dateValue = date ? toISODate(date) : '';
 
   return (
     <div className="space-y-10">
@@ -28,7 +29,7 @@ export const DateTimePicker: React.FC = () => {
             type="date"
             value={dateValue}
             onChange={handleDateChange}
-            min={new Date().toISOString().split('T')[0]}
+            min={laTodayISO()}
             className="w-full h-14 bg-white/5 border border-white/20 rounded-none px-6 text-sm text-white focus:outline-none focus:border-gold transition-all duration-300 hover:bg-white/10 [color-scheme:dark]"
           />
         </div>

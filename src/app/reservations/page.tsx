@@ -9,13 +9,15 @@ import { PartySelector } from '@/components/reservations/PartySelector';
 import { DateTimePicker } from '@/components/reservations/DateTimePicker';
 import { ContactForm } from '@/components/reservations/ContactForm';
 import { useReservationStore } from '@/store/useReservationStore';
-import { supabase } from '@/lib/supabase';
+import { postBooking, RESTAURANT_PHONE } from '@/lib/booking-client';
+import { formatTime12, toISODate } from '@/lib/dates';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function ReservationsPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const store = useReservationStore();
 
   const handleNext = () => {
@@ -27,53 +29,27 @@ export default function ReservationsPage() {
 
   const handleSubmit = async () => {
     if (!store.firstName || !store.email || !store.phone) return;
-    
+    if (!store.date || !store.time) return;
+
     setLoading(true);
-    try {
-      if (!store.date || !store.time) return;
-      
-      const [hours, minutes] = store.time.split(':');
-      const reservationTime = new Date(store.date);
-      reservationTime.setHours(parseInt(hours), parseInt(minutes));
-
-      const { error } = await supabase.from('reservations').insert({
-        party_size: store.partySize,
-        reservation_time: reservationTime.toISOString(),
-        first_name: store.firstName,
-        last_name: store.lastName,
-        email: store.email,
-        phone: store.phone,
-        notes: store.notes,
-      });
-
-      if (error) throw error;
-
-      // Trigger notification
-      await fetch('/api/notifications', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          type: 'new_reservation',
-          data: {
-            party_size: store.partySize,
-            reservation_time: reservationTime.toISOString(),
-            first_name: store.firstName,
-            last_name: store.lastName,
-            email: store.email,
-            phone: store.phone,
-            notes: store.notes,
-          }
-        })
-      }).catch(err => console.error('Failed to trigger notification:', err));
-
-      setSuccess(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (err) {
-      console.error(err);
-      alert('Failed to book reservation. Please try again.');
-    } finally {
-      setLoading(false);
+    setError(null);
+    const problem = await postBooking('/api/reservations', {
+      partySize: store.partySize,
+      date: toISODate(store.date),
+      time: store.time,
+      firstName: store.firstName,
+      lastName: store.lastName,
+      email: store.email,
+      phone: store.phone,
+      notes: store.notes,
+    });
+    setLoading(false);
+    if (problem) {
+      setError(problem);
+      return;
     }
+    setSuccess(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -156,9 +132,17 @@ export default function ReservationsPage() {
                         </p>
                       </div>
                       <ContactForm />
+                      {error && (
+                        <div role="alert" className="border border-red-400/40 bg-red-500/10 p-4 text-sm text-white/90">
+                          <p>{error}</p>
+                          <a href={RESTAURANT_PHONE.href} className="mt-2 inline-block font-bold text-gold underline">
+                            Call {RESTAURANT_PHONE.display}
+                          </a>
+                        </div>
+                      )}
                       <div className="flex flex-col-reverse md:flex-row gap-6 justify-between pt-10 border-t border-white/10">
                         <button
-                          onClick={() => setStep(1)}
+                          onClick={() => { setStep(1); setError(null); }}
                           className="text-[10px] font-bold tracking-[0.25em] text-white/40 uppercase hover:text-white transition-colors py-4 md:py-0"
                         >
                           ← BACK TO SELECTION
@@ -168,7 +152,7 @@ export default function ReservationsPage() {
                           disabled={loading || !store.firstName || !store.email || !store.phone}
                           className="btn-glow min-w-[240px]"
                         >
-                          {loading ? 'BOOKING...' : 'CONFIRM RESERVATION'}
+                          {loading ? 'SENDING...' : 'REQUEST TABLE'}
                         </button>
                       </div>
                     </>
@@ -196,15 +180,15 @@ export default function ReservationsPage() {
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M5 13l4 4L19 7" />
                     </svg>
                   </motion.div>
-                  <h2 className="text-3xl md:text-4xl font-bold text-white tracking-widest uppercase italic">Confirmed</h2>
+                  <h2 className="text-3xl md:text-4xl font-bold text-white tracking-widest uppercase italic">Request Received</h2>
                   <div className="space-y-4 max-w-sm mx-auto text-white/60 text-sm leading-relaxed">
                     <p>
-                      Thank you, <span className="text-white">{store.firstName}</span>. Your table for <span className="text-white">{store.partySize}</span> is scheduled.
+                      Thank you, <span className="text-white">{store.firstName}</span>. We&apos;ve received your request for a table for <span className="text-white">{store.partySize}</span>.
                     </p>
                     <p className="text-xs tracking-wider border-y border-white/10 py-4 my-6">
-                      {store.date?.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} @ {store.time}
+                      {store.date?.toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })} @ {store.time && formatTime12(store.time)}
                     </p>
-                    <p>A confirmation has been sent to {store.email}.</p>
+                    <p>We&apos;ll call or text you at <span className="text-white">{store.phone}</span> to confirm.</p>
                   </div>
                   <div className="pt-10">
                     <button
